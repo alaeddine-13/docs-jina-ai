@@ -1,0 +1,1228 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Flow API" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://docs.jina.ai/cookbooks/flow/flow-api.html" />
+  <meta property="og:site_name" content="Jina Documentation" />
+  <meta property="og:description" content="Flow is how Jina streamlines and scales Executors., Flow is a service, allowing multiple clients to access it via gRPC/REST/WebSocket from the public/private network.. A Flow object has the following common methods: Create a Flow: An empty Flow can be created via: from jina import Flow f = Flow()..." />
+  <meta property="og:image" content="https://docs.jina.ai/_static/banner.png" />
+  <meta property="og:image:alt" content="Jina Documentation" />
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48ZDWC8GT6');
+</script>
+    <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Remarks" href="remarks.html" /><link rel="prev" title="Flow" href="index.html" />
+
+    <meta name="generator" content="sphinx-3.5.3, furo 2021.06.18.beta36"/>
+        <title>Flow API - Welcome to Jina</title>
+      <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
+    <link rel="stylesheet" href="../../_static/pygments.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
+    <link rel="stylesheet" href="../../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Welcome to Jina</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-new.gif" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-new.gif" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Cookbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../document/index.html">Document/DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../document/document-api.html">Document API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarray-api.html">DocumentArray API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarraymemmap-api.html">DocumentArrayMemmap API</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../executor/index.html">Executor</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executor-api.html">Executor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executor-built-in-features.html">Executor Built-in Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executors-in-action.html">Executors in Action</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/repository-structure.html">Structure of the Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Flow</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Flow API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remarks.html">Remarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../hub/index.html">JinaHub</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hub/prerequisites.html">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/create-hub-executor.html">1. Create Hub Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/push-executor.html">2. Push Executor to JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/update-executor.html">3. Update Executor in JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/pull-executor.html">4. Pull Executor from JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/use-hub-executor.html">5. Use in Jina Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../daemon/index.html">JinaD</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/setup-jinad-server.html">Setup JinaD Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/start-jinad-client.html">Start JinaD Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/workspace.html">Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-executors.html">Create Remote Executors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-flows.html">Create Remote Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/stream-remote-logs.html">Streaming Remote Logs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/development-using-jinad.html">Development using JinaD</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/index.html">Jina Math</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/distances.html">Distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/dimension-reduction.html">Dimension Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/other-helpers.html">Other helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../serving/index.html">Serving Jina</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../serving/flow-as-a-service.html">Flow-as-a-service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../clean-code/index.html">Writing Clean &amp; Efficient Code with Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../proto/index.html">Jina Protobuf Specification</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina#read-tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://slack.jina.ai">Slack community</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <article role="main">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <div class="section" id="flow-api">
+<h1>Flow API<a class="headerlink" href="#flow-api" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Flow is how Jina streamlines and scales Executors.</p></li>
+<li><p>Flow is a service, allowing multiple clients to access it via gRPC/REST/WebSocket from the public/private network.</p></li>
+</ul>
+<p>A <code class="docutils literal notranslate"><span class="pre">Flow</span></code> object has the following common methods:</p>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Construct Flow</td>
+<td><code>.add()</code>, <code>.needs()</code></td>
+</tr>
+<tr>
+<td>Run Flow</td>
+<td><code>with</code> context manager</td>
+</tr>
+<tr>
+<td>Visualize Flow</td>
+<td><code>.plot()</code></td>
+</tr>
+<tr>
+<td>Send Request</td>
+<td><code>.post()</code></td>
+</tr>
+<tr>
+<td>Control</td>
+<td><code>.block()</code></td>
+</tr>
+</tbody>
+</table></div>
+<div class="section" id="create-a-flow">
+<h2>Create a Flow<a class="headerlink" href="#create-a-flow" title="Permalink to this headline">¶</a></h2>
+<p>An empty Flow can be created via:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-a-flow">
+<h2>Use a Flow<a class="headerlink" href="#use-a-flow" title="Permalink to this headline">¶</a></h2>
+<p>To use <code class="docutils literal notranslate"><span class="pre">f</span></code>, always open it as a context manager, just like you open a file. This is considered the best practice in
+Jina:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Note that,</p>
+<ul>
+<li><p>Flow follows a lazy construction pattern: it won’t actually run until you use <code class="docutils literal notranslate"><span class="pre">with</span></code> to open it.</p></li>
+<li><p>Once a Flow is open via <code class="docutils literal notranslate"><span class="pre">with</span></code>, you can send data requests to it. However, you cannot change its construction
+via <code class="docutils literal notranslate"><span class="pre">.add()</span></code> any more until it leaves the <code class="docutils literal notranslate"><span class="pre">with</span></code> context.</p></li>
+<li><p>The context exits when its inner code is finished. A Flow’s context without inner code will immediately exit. To
+prevent that, use <code class="docutils literal notranslate"><span class="pre">.block()</span></code> to suspend the current process.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>  <span class="c1"># block the current process</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="visualize-a-flow">
+<h2>Visualize a Flow<a class="headerlink" href="#visualize-a-flow" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'f.svg'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/empty-flow.svg" src="../../_images/empty-flow.svg"/></div>
+<p>In Jupyter Lab/Notebook, the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> object is rendered automatically without needing to call <code class="docutils literal notranslate"><span class="pre">plot()</span></code>.</p>
+</div>
+<div class="section" id="add-executor-to-a-flow">
+<h2>Add <code class="docutils literal notranslate"><span class="pre">Executor</span></code> to a Flow<a class="headerlink" href="#add-executor-to-a-flow" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">.add()</span></code> is the core method to add an Executor to a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> object. Each <code class="docutils literal notranslate"><span class="pre">add</span></code> creates a new Executor, and these
+Executors can be run as a local thread/process, a remote process, inside a Docker container, or even inside a remote
+Docker container.</p>
+<div class="section" id="quick-lookup-commonly-used-patterns-for-add">
+<h3>Quick lookup: commonly used patterns for <code class="docutils literal notranslate"><span class="pre">.add</span></code><a class="headerlink" href="#quick-lookup-commonly-used-patterns-for-add" title="Permalink to this headline">¶</a></h3>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Description</th>
+<th>Usage (<code>f = Flow(...)</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local native Executor in the context</td>
+<td><code>f.add(uses=MyExecutor)</code></td>
+</tr>
+<tr>
+<td>Local native Executor from a YAML</td>
+<td><code>f.add(uses='mwu_encoder.yml')</code></td>
+</tr>
+<tr>
+<td>Executor from Jina Hub</td>
+<td><code>f.add(uses='jinahub://MyExecutor')</code></td>
+</tr>
+<tr>
+<td>Dockerized Executor from Jina Hub</td>
+<td><code>f.add(uses='jinahub+docker://MyExecutor')</code></td>
+</tr>
+<tr>
+<td>Generalized dockerized Executor</td>
+<td><code>f.add(uses='docker://MyExecutor')</code></td>
+</tr>
+<tr>
+<td>Existing remote Executor</td>
+<td><code>f.add(host='123.45.67.89', port_in=12345, external=True)</code></td>
+</tr>
+<tr>
+<td>Spawn Remote Executor (via <code>jinad</code> on Remote)</td>
+<td><code>f.add(uses='mwu_encoder.yml', host='123.45.67.89', port_in=12345, port_expose=8080)</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><code class="docutils literal notranslate"><span class="pre">.add()</span></code> accepts the following common arguments:</p>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Define Executor</td>
+<td><code>uses</code></td>
+</tr>
+<tr>
+<td>Define Executor's parameters</td>
+<td><code>uses_with</code>, <code>uses_metas</code>, <code>uses_requests</code></td>
+</tr>
+<tr>
+<td>Define Dependencies</td>
+<td><code>needs</code></td>
+</tr>
+<tr>
+<td>Parallelization</td>
+<td><code>parallel</code>, <code>polling</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>For a full list of arguments, please check <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">executor</span> <span class="pre">--help</span></code>.</p>
+</div>
+<div class="section" id="chain-add">
+<h3>Chain <code class="docutils literal notranslate"><span class="pre">.add()</span></code><a class="headerlink" href="#chain-add" title="Permalink to this headline">¶</a></h3>
+<p>Chaining <code class="docutils literal notranslate"><span class="pre">.add()</span></code>s creates a sequential Flow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/chain-flow.svg" src="../../_images/chain-flow.svg"/></div>
+</div>
+<div class="section" id="define-what-executor-to-use-via-uses">
+<h3>Define What Executor to Use via <code class="docutils literal notranslate"><span class="pre">uses</span></code><a class="headerlink" href="#define-what-executor-to-use-via-uses" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">uses</span></code> parameter to specify the <span class="xref myst">Executor</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">uses</span></code> accepts multiple value types including class name, Docker image, (inline) YAML.</p>
+<div class="section" id="add-executor-via-its-class-name">
+<h4>Add Executor via its Class Name<a class="headerlink" href="#add-executor-via-its-class-name" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Executor</span>
+
+
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="o">...</span>
+
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="add-executor-via-yaml-file">
+<h4>Add Executor via YAML file<a class="headerlink" href="#add-executor-via-yaml-file" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">myexec.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span>
+
+
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="n">bar</span>
+
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">myexec.yml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MyExecutor</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="nt">bar</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">123</span>
+<span class="nt">metas</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">awesomeness</span>
+  <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my first awesome executor</span>
+  <span class="nt">py_modules</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">myexec.py</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">/random_work</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">'myexec.yml'</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Note that, YAML file can be also inline:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">'''</span>
+<span class="s1">jtype: MyExecutor</span>
+<span class="s1">with:</span>
+<span class="s1">  bar: 123</span>
+<span class="s1">metas:</span>
+<span class="s1">  name: awesomeness</span>
+<span class="s1">  description: my first awesome executor</span>
+<span class="s1">requests:</span>
+<span class="s1">  /random_work: foo    </span>
+<span class="s1">    '''</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="add-executor-via-dict">
+<h4>Add Executor via <code class="docutils literal notranslate"><span class="pre">Dict</span></code><a class="headerlink" href="#add-executor-via-dict" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">uses</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">'jtype'</span><span class="p">:</span> <span class="s1">'MyExecutor'</span><span class="p">,</span>
+        <span class="s1">'with'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'bar'</span><span class="p">:</span> <span class="mi">123</span><span class="p">}</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="add-an-already-spawned-executor">
+<h4>Add an already spawned Executor<a class="headerlink" href="#add-an-already-spawned-executor" title="Permalink to this headline">¶</a></h4>
+<p>A Flow does not have to be local-only. You can use any Executor on remote(s).</p>
+<p>The external Executor in the following two use-cases could have been spawned</p>
+<ul class="simple">
+<li><p>either by another Flow</p></li>
+<li><p>or by the <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">executor</span></code> CLI command</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">'localhost'</span><span class="p">,</span> <span class="n">port_in</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">external</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">'123.45.67.89'</span><span class="p">,</span> <span class="n">port_in</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">external</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="add-spawn-a-remote-executor-via-jinad">
+<h4>Add &amp; spawn a Remote <code class="docutils literal notranslate"><span class="pre">Executor</span></code> via <code class="docutils literal notranslate"><span class="pre">jinad</span></code><a class="headerlink" href="#add-spawn-a-remote-executor-via-jinad" title="Permalink to this headline">¶</a></h4>
+<p>In the example below, the Executor with
+the <code class="docutils literal notranslate"><span class="pre">host</span></code>
+keyword <code class="docutils literal notranslate"><span class="pre">gpu-exec</span></code>, is put to a remote machine for parallelization, whereas other Executors stay local. Extra file
+dependencies that need to be uploaded are specified via the <code class="docutils literal notranslate"><span class="pre">upload_files</span></code> keyword.</p>
+<div class="table-wrapper"><table>
+<tr>
+<td>123.45.67.89</td>
+<td>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># have docker installed</span>
+docker run --name<span class="o">=</span>jinad --network<span class="o">=</span>host -v /var/run/docker.sock:/var/run/docker.sock jinaai/jina:latest-daemon --port-expose <span class="m">8000</span>
+<span class="c1"># stop the docker container</span>
+docker rm -f jinad
+</pre></div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+    Local
+    </td>
+<td>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'gpu_exec'</span><span class="p">,</span>
+          <span class="n">uses</span><span class="o">=</span><span class="s1">'mwu_encoder.yml'</span><span class="p">,</span>
+          <span class="n">host</span><span class="o">=</span><span class="s1">'123.45.67.89:8000'</span><span class="p">,</span>
+          <span class="n">parallel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+          <span class="n">upload_files</span><span class="o">=</span><span class="p">[</span><span class="s1">'mwu_encoder.py'</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">())</span>
+</pre></div>
+</div>
+</td></tr>
+</table></div>
+<div class="section" id="commonly-used-arguments-for-deployment-in-add">
+<h5>Commonly used arguments for deployment in <code class="docutils literal notranslate"><span class="pre">.add</span></code><a class="headerlink" href="#commonly-used-arguments-for-deployment-in-add" title="Permalink to this headline">¶</a></h5>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Name</th>
+<th>default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>host</code></td>
+<td><code>0.0.0.0</code></td>
+<td>The host of the machine. Can be an ip address or DNS name (e.g. <code>0.0.0.0</code>, <code>my_encoder.jina.ai</code>)</td>
+</tr>
+<tr>
+<td><code>port_expose</code></td>
+<td>randomly initialized</td>
+<td>Port of JinaD on the remote machine.</td>
+</tr>
+<tr>
+<td><code>port_in</code></td>
+<td>randomly initialized</td>
+<td>Port for incoming traffic for the Executor.</td>
+</tr>
+<tr>
+<td><code>port_out</code></td>
+<td>randomly initialized</td>
+<td>Port for outgoing traffic for the Executor. This is only used in the remote-local use-case described below.</td>
+</tr>
+<tr>
+<td><code>connect_to_predecessor</code></td>
+<td><code>False</code></td>
+<td>Forces a Head to connect to the previous Tail. This is only used in the remote-local use-case described below.</td>
+</tr>
+<tr>
+<td><code>external</code></td>
+<td><code>False</code></td>
+<td>Stops <code>Flow</code> from context managing an Executor. This allows spawning of an external Executor and reusing across multiple Flows.</td>
+</tr>
+<tr>
+<td><code>uses</code>, <code>uses_before</code> and <code>uses_after</code> prefix</td>
+<td>No prefix</td>
+<td>When prefixing one of the <code>uses</code> arguments with <code>docker</code> or <code>jinahub+docker</code>, the Executor does not run natively, but is spawned inside a container.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="section" id="forcing-an-executor-in-the-remote-local-configuration">
+<h4>Forcing an Executor in the remote-local configuration<a class="headerlink" href="#forcing-an-executor-in-the-remote-local-configuration" title="Permalink to this headline">¶</a></h4>
+<p>Sometimes you want to use a remote Executor in your local Flow (e.g. using an expensive encoder on a remote GPU). Then
+the remote cannot talk back to the next local Executor directly. This is similar to a server that cannot talk to a
+client before the client has opened a connection. The Flow inside Jina has an auto-detection mechanism for such cases.
+Anyhow, in some networking setups this mechanism fails. Then you can force this by hand by setting
+the <code class="docutils literal notranslate"><span class="pre">connect_to_predecessor</span></code> argument and <code class="docutils literal notranslate"><span class="pre">port_out</span></code> to the Executor in front.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'remote'</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'123.45.67.89'</span><span class="p">,</span> <span class="n">port_out</span><span class="o">=</span><span class="mi">23456</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'local'</span><span class="p">,</span> <span class="n">connect_to_predecessor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="override-executor-configuration">
+<h3>Override Executor configuration<a class="headerlink" href="#override-executor-configuration" title="Permalink to this headline">¶</a></h3>
+<p>You can override 3 types of executor configurations when creating a flow:</p>
+<div class="section" id="metas-configuration">
+<h4><code class="docutils literal notranslate"><span class="pre">metas</span></code> configuration<a class="headerlink" href="#metas-configuration" title="Permalink to this headline">¶</a></h4>
+<p>To override the <code class="docutils literal notranslate"><span class="pre">metas</span></code> configuration of an executor (described
+<a class="reference external" href="https://github.com/jina-ai/jina/blob/master/.github/2.0/cookbooks/Executor.md#metas">here</a>), use <code class="docutils literal notranslate"><span class="pre">uses_metas</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">Flow</span>
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metas</span><span class="o">.</span><span class="n">workspace</span><span class="p">)</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">,</span>
+    <span class="n">uses_metas</span><span class="o">=</span><span class="p">{</span><span class="s1">'workspace'</span><span class="p">:</span> <span class="s1">'different_workspace'</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="k">with</span> <span class="n">flow</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>           pod0@219291[L]:ready and listening
+        gateway@219291[L]:ready and listening
+           Flow@219291[I]:🎉 Flow is ready to use!
+	🔗 Protocol: 		GRPC
+	🏠 Local access:	0.0.0.0:58827
+	🔒 Private network:	192.168.1.101:58827
+different_workspace
+</pre></div>
+</div>
+</div>
+<div class="section" id="with-configuration">
+<h4><code class="docutils literal notranslate"><span class="pre">with</span></code> configuration<a class="headerlink" href="#with-configuration" title="Permalink to this headline">¶</a></h4>
+<p>To override the <code class="docutils literal notranslate"><span class="pre">with</span></code> configuration of an executor, use <code class="docutils literal notranslate"><span class="pre">uses_with</span></code>. The <code class="docutils literal notranslate"><span class="pre">with</span></code> configuration refers to user-defined
+constructor kwargs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">Flow</span>
+
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param2</span> <span class="o">=</span> <span class="n">param2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param3</span> <span class="o">=</span> <span class="n">param3</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'param1:'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'param2:'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'param3:'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param3</span><span class="p">)</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">,</span> <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">'param1'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'param3'</span><span class="p">:</span> <span class="mi">30</span><span class="p">})</span>
+<span class="k">with</span> <span class="n">flow</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>           pod0@219662[L]:ready and listening
+        gateway@219662[L]:ready and listening
+           Flow@219662[I]:🎉 Flow is ready to use!
+	🔗 Protocol: 		GRPC
+	🏠 Local access:	0.0.0.0:32825
+	🔒 Private network:	192.168.1.101:32825
+	🌐 Public address:	197.28.82.165:32825
+param1: 10
+param2: 2
+param3: 30
+</pre></div>
+</div>
+</div>
+<div class="section" id="requests-configuration">
+<h4><code class="docutils literal notranslate"><span class="pre">requests</span></code> configuration<a class="headerlink" href="#requests-configuration" title="Permalink to this headline">¶</a></h4>
+<p>You can override the <code class="docutils literal notranslate"><span class="pre">requests</span></code> configuration of an executor and bind methods to endpoints that you provide:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">Flow</span>
+
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">)</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">,</span> <span class="n">uses_requests</span><span class="o">=</span><span class="p">{</span><span class="s1">'/index'</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">})</span>
+<span class="k">with</span> <span class="n">flow</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/index'</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/dummy'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>           pod0@221058[L]:ready and listening
+        gateway@221058[L]:ready and listening
+           Flow@221058[I]:🎉 Flow is ready to use!
+	🔗 Protocol: 		GRPC
+	🏠 Local access:	0.0.0.0:36507
+	🔒 Private network:	192.168.1.101:36507
+	🌐 Public address:	197.28.82.165:36507
+bar
+foo
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="parallelization">
+<h2>Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="intra-parallelism-via-needs">
+<h3>Intra Parallelism via <code class="docutils literal notranslate"><span class="pre">needs</span></code><a class="headerlink" href="#intra-parallelism-via-needs" title="Permalink to this headline">¶</a></h3>
+<p>For parallelism, use the <code class="docutils literal notranslate"><span class="pre">needs</span></code> parameter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p1'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p2'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p3'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">needs</span><span class="p">([</span><span class="s1">'p1'</span><span class="p">,</span> <span class="s1">'p2'</span><span class="p">,</span> <span class="s1">'p3'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">'r1'</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/simple-plot3.svg" src="../../_images/simple-plot3.svg"/></div>
+<p><code class="docutils literal notranslate"><span class="pre">p1</span></code>, <code class="docutils literal notranslate"><span class="pre">p2</span></code>, <code class="docutils literal notranslate"><span class="pre">p3</span></code> now subscribe to <code class="docutils literal notranslate"><span class="pre">Gateway</span></code> and conduct their work in parallel. The last <code class="docutils literal notranslate"><span class="pre">.needs()</span></code> blocks all Executors
+until they finish their work.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.needs()</span></code> is syntax sugar and roughly equal to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">needs</span><span class="o">=</span><span class="p">[</span><span class="s1">'p1'</span><span class="p">,</span> <span class="s1">'p2'</span><span class="p">,</span> <span class="s1">'p3'</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">.needs_all()</span></code> is syntax sugar and roughly equal to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">needs</span><span class="o">=</span><span class="p">[</span><span class="n">all_orphan_executors_so_far</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>“Orphan” Executors have no connected Executors to their outputs. The above code snippet can be also written as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p1'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p2'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p3'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">needs_all</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inter-parallelism-via-parallel">
+<h3>Inter Parallelism via <code class="docutils literal notranslate"><span class="pre">parallel</span></code><a class="headerlink" href="#inter-parallelism-via-parallel" title="Permalink to this headline">¶</a></h3>
+<p>Parallelism can also be performed inside an Executor using <code class="docutils literal notranslate"><span class="pre">parallel</span></code>. The example below starts three <code class="docutils literal notranslate"><span class="pre">p1</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p1'</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p2'</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/parallel-explain.svg" src="../../_images/parallel-explain.svg"/></div>
+<p>Note, by default:</p>
+<ul class="simple">
+<li><p>only one <code class="docutils literal notranslate"><span class="pre">p1</span></code> will receive a message.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p2</span></code> will be called when <em>any one of</em> <code class="docutils literal notranslate"><span class="pre">p1</span></code> finished.</p></li>
+</ul>
+<p>To change that behavior, you can add <code class="docutils literal notranslate"><span class="pre">polling</span></code> argument to <code class="docutils literal notranslate"><span class="pre">.add()</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">.add(parallel=3,</span> <span class="pre">polling='ALL')</span></code>.
+Specifically,</p>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th><code>polling</code></th>
+<th>Who will receive from upstream?</th>
+<th>When will downstream be called?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ANY</code></td>
+<td>one of parallels</td>
+<td>one of parallels is finished</td>
+</tr>
+<tr>
+<td><code>ALL</code></td>
+<td>all parallels</td>
+<td>all parallels are finished</td>
+</tr>
+<tr>
+<td><code>ALL_ASYNC</code></td>
+<td>all parallels</td>
+<td>one of parallels is finished</td>
+</tr>
+</tbody>
+</table></div>
+<p>You can combine inter and inner parallelization via:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p1'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p2'</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">'gateway'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'p3'</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">needs</span><span class="p">([</span><span class="s1">'p1'</span><span class="p">,</span> <span class="s1">'p3'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">'r1'</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/simple-plot4.svg" src="../../_images/simple-plot4.svg"/></div>
+</div>
+</div>
+<div class="section" id="send-data-request-via-post">
+<h2>Send data request via <code class="docutils literal notranslate"><span class="pre">post</span></code><a class="headerlink" href="#send-data-request-via-post" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">.post()</span></code> is the core method for sending data to a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> object.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.post()</span></code> must be called <em>inside</em> the <code class="docutils literal notranslate"><span class="pre">with</span></code> context:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="function-signature">
+<h3>Function Signature<a class="headerlink" href="#function-signature" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">post</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">on</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InputType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_done</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_error</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_always</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_peapod</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">request_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">continue_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">return_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""Post a general data request to the Flow.</span>
+<span class="sd">  </span>
+<span class="sd">    :param on: the endpoint is used for identifying the user-defined ``request_type``, labeled by ``@requests(on='/abc')``</span>
+<span class="sd">    :param inputs: input data which can be an Iterable, a function which returns an Iterable, or a single Document id.</span>
+<span class="sd">    :param on_done: the function to be called when the :class:`Request` object is resolved.</span>
+<span class="sd">    :param on_error: the function to be called when the :class:`Request` object is rejected.</span>
+<span class="sd">    :param on_always: the function to be called when the :class:`Request` object is  is either resolved or rejected.</span>
+<span class="sd">    :param target_peapod: a regex string represent the certain peas/pods request targeted</span>
+<span class="sd">    :param parameters: the kwargs that will be sent to the executor</span>
+<span class="sd">    :param request_size: the number of Documents per request. &lt;=0 means all inputs in one request.</span>
+<span class="sd">    :param show_progress: if set, client will show a progress bar on receiving every request.</span>
+<span class="sd">    :param continue_on_error: if set, a Request that causes callback error will be logged only without blocking the further requests.</span>
+<span class="sd">    :param return_results: if set, the results of all Requests will be returned as a list. This is useful when one wants process Responses in bulk instead of using callback.</span>
+<span class="sd">    :param kwargs: additional parameters</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    """</span>
+</pre></div>
+</div>
+<p>Note, you can also use CRUD methods (<code class="docutils literal notranslate"><span class="pre">index</span></code>, <code class="docutils literal notranslate"><span class="pre">search</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">delete</span></code>) which are just sugary syntax of <code class="docutils literal notranslate"><span class="pre">post</span></code>
+with <code class="docutils literal notranslate"><span class="pre">on='/index'</span></code>
+, <code class="docutils literal notranslate"><span class="pre">on='/search'</span></code>, etc. Precisely, they are defined as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">partialmethod</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="s1">'/index'</span><span class="p">)</span>
+<span class="n">search</span> <span class="o">=</span> <span class="n">partialmethod</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="s1">'/search'</span><span class="p">)</span>
+<span class="n">update</span> <span class="o">=</span> <span class="n">partialmethod</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="s1">'/update'</span><span class="p">)</span>
+<span class="n">delete</span> <span class="o">=</span> <span class="n">partialmethod</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="s1">'/delete'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="define-data-via-inputs">
+<h3>Define Data via <code class="docutils literal notranslate"><span class="pre">inputs</span></code><a class="headerlink" href="#define-data-via-inputs" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">inputs</span></code> can take a single <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, an iterator of <code class="docutils literal notranslate"><span class="pre">Document</span></code>, a generator of <code class="docutils literal notranslate"><span class="pre">Document</span></code>, a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>
+object, and None.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">'world'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">doc_gen</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s1">'hello </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">Flow</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">d1</span><span class="p">)</span>  <span class="c1"># Single document</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">[</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">])</span>  <span class="c1"># a list of Document</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">doc_gen</span><span class="p">)</span>  <span class="c1"># Document generator</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">]))</span>  <span class="c1"># DocumentArray</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>  <span class="c1"># empty</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Document</span></code> module provides some methods that lets you build <code class="docutils literal notranslate"><span class="pre">Document</span></code> generator, e.g. <a class="reference external" href="Document.md#construct-from-json-csv-ndarray-and-files"><code class="docutils literal notranslate"><span class="pre">from_csv</span></code>
+, <code class="docutils literal notranslate"><span class="pre">from_files</span></code>, <code class="docutils literal notranslate"><span class="pre">from_ndarray</span></code>, <code class="docutils literal notranslate"><span class="pre">from_ndjson</span></code></a>. They can be used
+in conjunction with <code class="docutils literal notranslate"><span class="pre">.post()</span></code>, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="kn">from</span> <span class="nn">jina.types.document.generators</span> <span class="kn">import</span> <span class="n">from_csv</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'my.csv'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">from_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">field_resolver</span><span class="o">=</span><span class="p">{</span><span class="s1">'question'</span><span class="p">:</span> <span class="s1">'text'</span><span class="p">}))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="callback-functions">
+<h3>Callback Functions<a class="headerlink" href="#callback-functions" title="Permalink to this headline">¶</a></h3>
+<p>Once a request is returned, callback functions are fired. Jina Flow implements a Promise-like interface. You can add
+callback functions <code class="docutils literal notranslate"><span class="pre">on_done</span></code>, <code class="docutils literal notranslate"><span class="pre">on_error</span></code>, <code class="docutils literal notranslate"><span class="pre">on_always</span></code> to hook different events.</p>
+<p>In Jina, callback function’s first argument is a <code class="docutils literal notranslate"><span class="pre">jina.types.request.Response</span></code> object. Hence, you can annotate the
+callback function via:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.types.request</span> <span class="kn">import</span> <span class="n">Response</span>
+
+
+<span class="k">def</span> <span class="nf">my_callback</span><span class="p">(</span><span class="n">rep</span><span class="p">:</span> <span class="n">Response</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Response</span></code> object has many attributes, probably the most popular one is <code class="docutils literal notranslate"><span class="pre">Response.docs</span></code>, where you can access
+all <code class="docutils literal notranslate"><span class="pre">Document</span></code> as an <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p>
+<p>In the example below, our Flow passes the message then prints the result when successful. If something goes wrong, it
+beeps. Finally, the result is written to <code class="docutils literal notranslate"><span class="pre">output.txt</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">Flow</span>
+
+
+<span class="k">def</span> <span class="nf">beep</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="c1"># make a beep sound</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\a</span><span class="s1">'</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'output.txt'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span>
+           <span class="n">Document</span><span class="p">(),</span>
+           <span class="n">on_done</span><span class="o">=</span><span class="nb">print</span><span class="p">,</span>
+           <span class="n">on_error</span><span class="o">=</span><span class="n">beep</span><span class="p">,</span>
+           <span class="n">on_always</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="send-parameters">
+<h3>Send Parameters<a class="headerlink" href="#send-parameters" title="Permalink to this headline">¶</a></h3>
+<p>To send parameters to the Executor, use</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'hello'</span><span class="p">])</span>
+
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">Document</span><span class="p">(),</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">'hello'</span><span class="p">:</span> <span class="s1">'world'</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Note that you can send a parameters-only data request via:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">'hello'</span><span class="p">:</span> <span class="s1">'world'</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>This is useful to control <code class="docutils literal notranslate"><span class="pre">Executor</span></code> objects in the runtime.</p>
+</div>
+<div class="section" id="fine-grained-control-on-request">
+<h3>Fine-grained Control on Request<a class="headerlink" href="#fine-grained-control-on-request" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="size-of-the-request">
+<h4>Size of the Request<a class="headerlink" href="#size-of-the-request" title="Permalink to this headline">¶</a></h4>
+<p>You can control how many <code class="docutils literal notranslate"><span class="pre">Documents</span></code> in each request by <code class="docutils literal notranslate"><span class="pre">request_size</span></code>. Say your <code class="docutils literal notranslate"><span class="pre">inputs</span></code> has length of 100, whereas
+you <code class="docutils literal notranslate"><span class="pre">request_size</span></code> is set to <code class="docutils literal notranslate"><span class="pre">10</span></code>. Then <code class="docutils literal notranslate"><span class="pre">f.post</span></code> will send ten requests and return 10 responses:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="n">Document</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)),</span> <span class="n">request_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">        gateway@137489[L]:ready and listening</span>
+<span class="go">           Flow@137489[I]:🎉 Flow is ready to use!</span>
+<span class="go">	🔗 Protocol: 		GRPC</span>
+<span class="go">	🏠 Local access:	0.0.0.0:44249</span>
+<span class="go">	🔒 Private network:	192.168.1.100:44249</span>
+<span class="go">	🌐 Public address:	197.28.126.36:44249</span>
+</pre></div>
+</div>
+<p>To see that more clearly, you can turn on the progress-bar by <code class="docutils literal notranslate"><span class="pre">show_progress</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="n">Document</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)),</span> <span class="n">request_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">        gateway@137489[L]:ready and listening</span>
+<span class="go">           Flow@137489[I]:🎉 Flow is ready to use!</span>
+<span class="go">	🔗 Protocol: 		GRPC</span>
+<span class="go">	🏠 Local access:	0.0.0.0:59109</span>
+<span class="go">	🔒 Private network:	192.168.1.100:59109</span>
+<span class="go">	🌐 Public address:	197.28.126.36:59109</span>
+<span class="go">⏳   |██████████          | ⏱️ 0.0s 🐎 429.0 RPS✅ 10 requests done in ⏱ 0 seconds 🐎 425.1 RPS</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="get-all-responses">
+<h3>Get All Responses<a class="headerlink" href="#get-all-responses" title="Permalink to this headline">¶</a></h3>
+<p>In some scenarios (e.g. testing), you may want to get the all responses in bulk and then process them; instead of
+processing responses on the fly. To do that, you can turn on <code class="docutils literal notranslate"><span class="pre">return_results</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">all_responses</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="p">(</span><span class="n">Document</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)),</span> <span class="n">request_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">return_results</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">all_responses</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">        gateway@137489[L]:ready and listening</span>
+<span class="go">           Flow@137489[I]:🎉 Flow is ready to use!</span>
+<span class="go">	🔗 Protocol: 		GRPC</span>
+<span class="go">	🏠 Local access:	0.0.0.0:59275</span>
+<span class="go">	🔒 Private network:	192.168.1.100:59275</span>
+<span class="go">	🌐 Public address:	197.28.126.36:59275</span>
+<span class="go">[&lt;jina.types.request.Response request_id=116880a6-acd7-474a-8ec6-71bab47041cd data={'docs': [{'id': 'e42c22dc-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c2552-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c26e2-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c2836-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c298a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c2ad4-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c2c1e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c2d5e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c2ea8-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c2ff2-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.896226Z', 'end_time': '2021-06-23T06:04:37.897433Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.897424Z'}] status={} at 5673238672&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=37040d37-6835-443e-8741-b2f762ae95cc data={'docs': [{'id': 'e42c806a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c8a10-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c8e70-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c9276-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c9668-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42ca748-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42ca996-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42caaf4-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cb40e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cb594-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.898454Z', 'end_time': '2021-06-23T06:04:37.899392Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.899384Z'}] status={} at 5678885008&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=54eddb8b-8691-446f-98bc-1d492f5bedb0 data={'docs': [{'id': 'e42cfc16-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cfdb0-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cff04-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d0044-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d017a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d02ba-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d03fa-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d053a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d067a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d07b0-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.900145Z', 'end_time': '2021-06-23T06:04:37.901004Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.900997Z'}] status={} at 5721399952&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=653e1721-5371-42fb-98e8-714293a0b5bc data={'docs': [{'id': 'e42bc468-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bd228-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bd462-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bd5fc-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bd76e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bd8cc-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bda20-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bdb7e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bdcd2-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42bde1c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.891429Z', 'end_time': '2021-06-23T06:04:37.895875Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.895849Z'}] status={} at 5724839696&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=5e8dddcc-0215-45cb-8d48-289c0e6f60ca data={'docs': [{'id': 'e42c086a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c0be4-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c0d88-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c0f04-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c1062-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c11c0-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c133c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c147c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c15c6-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c1710-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.894530Z', 'end_time': '2021-06-23T06:04:37.896864Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.896851Z'}] status={} at 5724838800&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=d207de83-52c6-4287-8504-d6ab08816987 data={'docs': [{'id': 'e42c5306-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c55ea-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c57a2-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c5946-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c5ab8-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c5c20-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c5d7e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c5edc-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c603a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c618e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.897747Z', 'end_time': '2021-06-23T06:04:37.898746Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.898738Z'}] status={} at 5724838864&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=590ae511-b5ad-4bd7-9ed1-baba2c63aadf data={'docs': [{'id': 'e42ce596-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42ce730-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42ce884-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42ce9d8-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42ceb18-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cec76-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cedf2-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cef28-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cf068-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cf1a8-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.899588Z', 'end_time': '2021-06-23T06:04:37.900536Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.900527Z'}] status={} at 4468253072&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=4771806e-6c33-4a75-a519-85916a949ea2 data={'docs': [{'id': 'e42c3a06-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c3bf0-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c3d6c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c3ede-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c4050-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c41ae-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c430c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c446a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c45c8-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42c473a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.897122Z', 'end_time': '2021-06-23T06:04:37.898220Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.898208Z'}] status={} at 5724837648&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=76d92a47-7ce5-4a86-aab2-c3ced227d8e4 data={'docs': [{'id': 'e42cce62-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd074-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd1c8-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd312-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd452-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd592-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd6d2-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd81c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cd95c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42cda9c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.899022Z', 'end_time': '2021-06-23T06:04:37.899859Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.899852Z'}] status={} at 5724837264&gt;,</span>
+<span class="go"> &lt;jina.types.request.Response request_id=c741e3dd-c57e-4deb-b074-99cd65037e05 data={'docs': [{'id': 'e42d123c-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d143a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d15ac-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d1700-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d184a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d198a-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d1ad4-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d1c14-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d1d54-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}, {'id': 'e42d1e9e-d3e8-11eb-aecd-1e008a366d48', 'content_hash': 'e4a6a0577479b2b4'}]} header={'exec_endpoint': '/'} routes=[{'pod': 'gateway', 'pod_id': 'c5a1293e-80b3-4b40-84d1-b9742611b92e', 'start_time': '2021-06-23T06:04:37.900727Z', 'end_time': '2021-06-23T06:04:37.902004Z'}, {'pod': 'gateway', 'pod_id': '6e3b1625-531d-4ec2-a8eb-43f2fb0fe7ee', 'start_time': '2021-06-23T06:04:37.901984Z'}] status={} at 5724837200&gt;]</span>
+</pre></div>
+</div>
+<p>Note, turning on <code class="docutils literal notranslate"><span class="pre">return_results</span></code> breaks the streaming of the system. If you are sending 1000 requests,
+then <code class="docutils literal notranslate"><span class="pre">return_results=True</span></code> means you will get nothing until the 1000th response returns. Moreover, if each response
+takes 10MB memory, it means you will consume upto 10GB memory! On contrary, with callback and <code class="docutils literal notranslate"><span class="pre">return_results=False</span></code>,
+your memory usage will stay constant at 10MB.</p>
+</div>
+</div>
+<div class="section" id="asynchronous-flow">
+<h2>Asynchronous Flow<a class="headerlink" href="#asynchronous-flow" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> is an “async version” of the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> class.</p>
+<p>The quote mark represents the explicit async when using <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code>.</p>
+<p>While synchronous from outside, <code class="docutils literal notranslate"><span class="pre">Flow</span></code> also runs asynchronously under the hood: it manages the eventloop(s) for
+scheduling the jobs. If the user wants more control over the eventloop, then <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> can be used.</p>
+<p>To create an <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code>, simply</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">AsyncFlow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">AsyncFlow</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>There is also a sugary syntax <code class="docutils literal notranslate"><span class="pre">Flow(asyncio=True)</span></code> for initiating an <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">asyncio</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> accepts input and output functions
+as <a class="reference external" href="https://www.python.org/dev/peps/pep-0525/">async generators</a>. This is useful when your data sources involve other
+asynchronous libraries (e.g. motor for MongoDB):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">AsyncFlow</span><span class="p">,</span> <span class="n">Document</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">async_inputs</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">Document</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">AsyncFlow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">async_inputs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> is particularly useful when Jina and another heavy-lifting job are running concurrently:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">AsyncFlow</span><span class="p">,</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">HeavyWork</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run_async_flow_5s</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">AsyncFlow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">HeavyWork</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">heavylifting</span><span class="p">():</span>  <span class="c1"># total roundtrip takes ~5s</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'heavylifting other io-bound jobs, e.g. download, upload, file io'</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'heavylifting done after 5s'</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">concurrent_main</span><span class="p">():</span>  <span class="c1"># about 5s; but some dispatch cost, can't be just 5s, usually at &lt;7s</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">run_async_flow_5s</span><span class="p">(),</span> <span class="n">heavylifting</span><span class="p">())</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">concurrent_main</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> is very useful when using Jina inside a Jupyter Notebook, where it can run out-of-the-box.</p>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="remarks.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Remarks</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Flow</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; Jina AI Limited. All rights reserved.
+            |
+            Last updated on Aug 27, 2021.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Flow API</a><ul>
+<li><a class="reference internal" href="#create-a-flow">Create a Flow</a></li>
+<li><a class="reference internal" href="#use-a-flow">Use a Flow</a></li>
+<li><a class="reference internal" href="#visualize-a-flow">Visualize a Flow</a></li>
+<li><a class="reference internal" href="#add-executor-to-a-flow">Add <code class="docutils literal notranslate"><span class="pre">Executor</span></code> to a Flow</a><ul>
+<li><a class="reference internal" href="#quick-lookup-commonly-used-patterns-for-add">Quick lookup: commonly used patterns for <code class="docutils literal notranslate"><span class="pre">.add</span></code></a></li>
+<li><a class="reference internal" href="#chain-add">Chain <code class="docutils literal notranslate"><span class="pre">.add()</span></code></a></li>
+<li><a class="reference internal" href="#define-what-executor-to-use-via-uses">Define What Executor to Use via <code class="docutils literal notranslate"><span class="pre">uses</span></code></a><ul>
+<li><a class="reference internal" href="#add-executor-via-its-class-name">Add Executor via its Class Name</a></li>
+<li><a class="reference internal" href="#add-executor-via-yaml-file">Add Executor via YAML file</a></li>
+<li><a class="reference internal" href="#add-executor-via-dict">Add Executor via <code class="docutils literal notranslate"><span class="pre">Dict</span></code></a></li>
+<li><a class="reference internal" href="#add-an-already-spawned-executor">Add an already spawned Executor</a></li>
+<li><a class="reference internal" href="#add-spawn-a-remote-executor-via-jinad">Add &amp; spawn a Remote <code class="docutils literal notranslate"><span class="pre">Executor</span></code> via <code class="docutils literal notranslate"><span class="pre">jinad</span></code></a><ul>
+<li><a class="reference internal" href="#commonly-used-arguments-for-deployment-in-add">Commonly used arguments for deployment in <code class="docutils literal notranslate"><span class="pre">.add</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#forcing-an-executor-in-the-remote-local-configuration">Forcing an Executor in the remote-local configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#override-executor-configuration">Override Executor configuration</a><ul>
+<li><a class="reference internal" href="#metas-configuration"><code class="docutils literal notranslate"><span class="pre">metas</span></code> configuration</a></li>
+<li><a class="reference internal" href="#with-configuration"><code class="docutils literal notranslate"><span class="pre">with</span></code> configuration</a></li>
+<li><a class="reference internal" href="#requests-configuration"><code class="docutils literal notranslate"><span class="pre">requests</span></code> configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#parallelization">Parallelization</a><ul>
+<li><a class="reference internal" href="#intra-parallelism-via-needs">Intra Parallelism via <code class="docutils literal notranslate"><span class="pre">needs</span></code></a></li>
+<li><a class="reference internal" href="#inter-parallelism-via-parallel">Inter Parallelism via <code class="docutils literal notranslate"><span class="pre">parallel</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#send-data-request-via-post">Send data request via <code class="docutils literal notranslate"><span class="pre">post</span></code></a><ul>
+<li><a class="reference internal" href="#function-signature">Function Signature</a></li>
+<li><a class="reference internal" href="#define-data-via-inputs">Define Data via <code class="docutils literal notranslate"><span class="pre">inputs</span></code></a></li>
+<li><a class="reference internal" href="#callback-functions">Callback Functions</a></li>
+<li><a class="reference internal" href="#send-parameters">Send Parameters</a></li>
+<li><a class="reference internal" href="#fine-grained-control-on-request">Fine-grained Control on Request</a><ul>
+<li><a class="reference internal" href="#size-of-the-request">Size of the Request</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#get-all-responses">Get All Responses</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#asynchronous-flow">Asynchronous Flow</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

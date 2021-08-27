@@ -1,0 +1,683 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Flow-as-a-service" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://docs.jina.ai/cookbooks/serving/flow-as-a-service.html" />
+  <meta property="og:site_name" content="Jina Documentation" />
+  <meta property="og:description" content="A Flow is a service by nature. Though implicitly, you are already using it as a service. When you start a Flow and call.post() inside the context, a jina.Client object is created and used for communication. Many times we need to use Flow& Client in a more explicit way, often due to one of the fol..." />
+  <meta property="og:image" content="https://docs.jina.ai/_static/banner.png" />
+  <meta property="og:image:alt" content="Jina Documentation" />
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48ZDWC8GT6');
+</script>
+    <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Writing Clean &amp; Efficient Code with Jina" href="../clean-code/index.html" /><link rel="prev" title="Serving Jina" href="index.html" />
+
+    <meta name="generator" content="sphinx-3.5.3, furo 2021.06.18.beta36"/>
+        <title>Flow-as-a-service - Welcome to Jina</title>
+      <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
+    <link rel="stylesheet" href="../../_static/pygments.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
+    <link rel="stylesheet" href="../../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Welcome to Jina</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-new.gif" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-new.gif" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Cookbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../document/index.html">Document/DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../document/document-api.html">Document API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarray-api.html">DocumentArray API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarraymemmap-api.html">DocumentArrayMemmap API</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../executor/index.html">Executor</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executor-api.html">Executor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executor-built-in-features.html">Executor Built-in Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executors-in-action.html">Executors in Action</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/repository-structure.html">Structure of the Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../flow/index.html">Flow</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flow/flow-api.html">Flow API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/remarks.html">Remarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../hub/index.html">JinaHub</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hub/prerequisites.html">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/create-hub-executor.html">1. Create Hub Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/push-executor.html">2. Push Executor to JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/update-executor.html">3. Update Executor in JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/pull-executor.html">4. Pull Executor from JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/use-hub-executor.html">5. Use in Jina Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../daemon/index.html">JinaD</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/setup-jinad-server.html">Setup JinaD Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/start-jinad-client.html">Start JinaD Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/workspace.html">Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-executors.html">Create Remote Executors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-flows.html">Create Remote Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/stream-remote-logs.html">Streaming Remote Logs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/development-using-jinad.html">Development using JinaD</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/index.html">Jina Math</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/distances.html">Distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/dimension-reduction.html">Dimension Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/other-helpers.html">Other helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Serving Jina</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Flow-as-a-service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../clean-code/index.html">Writing Clean &amp; Efficient Code with Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../proto/index.html">Jina Protobuf Specification</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina#read-tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://slack.jina.ai">Slack community</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <article role="main">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <div class="section" id="flow-as-a-service">
+<h1>Flow-as-a-service<a class="headerlink" href="#flow-as-a-service" title="Permalink to this headline">¶</a></h1>
+<p>A <code class="docutils literal notranslate"><span class="pre">Flow</span></code> <em>is</em> a service by nature. Though implicitly, you are already using it as a service.</p>
+<p>When you start a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and call <code class="docutils literal notranslate"><span class="pre">.post()</span></code> inside the context, a <code class="docutils literal notranslate"><span class="pre">jina.Client</span></code> object is created and used for
+communication.</p>
+<div class="figure align-center">
+<img alt="../../_images/implict-vs-explicit-service.svg" src="../../_images/implict-vs-explicit-service.svg"/></div>
+<p>Many times we need to use <code class="docutils literal notranslate"><span class="pre">Flow</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">Client</span></code> in a more explicit way, often due to one of the following reasons:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Flow</span></code> and <code class="docutils literal notranslate"><span class="pre">Client</span></code> are on different machines: one on GPU, one on CPU;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Flow</span></code> and <code class="docutils literal notranslate"><span class="pre">Client</span></code> have different lifetime: one lives longer, one lives shorter;</p></li>
+<li><p>Multiple <code class="docutils literal notranslate"><span class="pre">Client</span></code> want to access one <code class="docutils literal notranslate"><span class="pre">Flow</span></code>;</p></li>
+<li><p>One <code class="docutils literal notranslate"><span class="pre">Client</span></code> want to interleave its access to multiple <code class="docutils literal notranslate"><span class="pre">Flow</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Client</span></code> is browser/curl/Postman.</p></li>
+</ul>
+<p>Before this cookbook, you are mostly using Flow as an implicit service. In the sequel, we will show you how to serve
+Flow in an explicit C/S style.</p>
+<div class="section" id="supported-communication-protocols">
+<h2>Supported Communication Protocols<a class="headerlink" href="#supported-communication-protocols" title="Permalink to this headline">¶</a></h2>
+<p>Jina supports <code class="docutils literal notranslate"><span class="pre">grpc</span></code>, <code class="docutils literal notranslate"><span class="pre">websocket</span></code>, <code class="docutils literal notranslate"><span class="pre">http</span></code> three communication protocols between <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and <code class="docutils literal notranslate"><span class="pre">Client</span></code>.</p>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Protocol</th>
+<th>Requirements</th>
+<th>Description</th>
+<th>Performance on large data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grpc</code></td>
+<td>-</td>
+<td>Default gRPC protocol, mainly for streaming data</td>
+<td>Super</td>
+</tr>
+<tr>
+<td><code>websocket</code></td>
+<td><code>pip install "jina[client,http]"</code></td>
+<td>WebSocket protocol, used in frontend language that supports websocket, mainly for streaming data</td>
+<td>Super</td>
+</tr>
+<tr>
+<td><code>http</code></td>
+<td><code>pip install "jina[client,http]"</code></td>
+<td>HTTP protocol, mainly for allow any client to have HTTP access</td>
+<td>Good</td>
+</tr>
+</tbody>
+</table></div>
+<p>The protocol is controlled by <code class="docutils literal notranslate"><span class="pre">protocol=</span></code> argument in <code class="docutils literal notranslate"><span class="pre">Flow</span></code>/<code class="docutils literal notranslate"><span class="pre">Client</span></code>’s constructor.</p>
+<div class="figure align-center">
+<img alt="../../_images/client-server.svg" src="../../_images/client-server.svg"/></div>
+</div>
+<div class="section" id="via-grpc">
+<h2>via gRPC<a class="headerlink" href="#via-grpc" title="Permalink to this headline">¶</a></h2>
+<p>On the server-side, create an empty Flow and use <code class="docutils literal notranslate"><span class="pre">.block</span></code> to prevent the process exiting.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="n">port_expose</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">        gateway@153127[L]:ready and listening</span>
+<span class="go">           Flow@153127[I]:🎉 Flow is ready to use!</span>
+<span class="go">	🔗 Protocol: 		GRPC</span>
+<span class="go">	🏠 Local access:	0.0.0.0:12345</span>
+<span class="go">	🔒 Private network:	192.168.1.15:12345</span>
+<span class="go">	🌐 Public address:	197.26.36.43:12345</span>
+</pre></div>
+</div>
+<p>Note that the host address is <code class="docutils literal notranslate"><span class="pre">192.168.1.15</span></code> and <code class="docutils literal notranslate"><span class="pre">port_expose</span></code> is <code class="docutils literal notranslate"><span class="pre">12345</span></code>.</p>
+<p>While keep this server open, let’s create a client on a different machine:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">'192.168.1.15'</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+
+<span class="n">c</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">GRPCClient@14744[S]:connected to the gateway at 0.0.0.0:12345!</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="via-websocket">
+<h2>via WebSocket<a class="headerlink" href="#via-websocket" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'websocket'</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">        gateway@153127[L]:ready and listening</span>
+<span class="go">           Flow@153127[I]:🎉 Flow is ready to use!</span>
+<span class="go">	🔗 Protocol: 		WEBSOCKET</span>
+<span class="go">	🏠 Local access:	0.0.0.0:12345</span>
+<span class="go">	🔒 Private network:	192.168.1.15:12345</span>
+<span class="go">	🌐 Public address:	197.26.36.43:12345</span>
+</pre></div>
+</div>
+<p>This will serve the Flow with WebSocket, so any Client connects to it should follow the WebSocket protocol as well.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'websocket'</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'192.168.1.15'</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">WebSocketClient@14574[S]:connected to the gateway at 0.0.0.0:12345!</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="via-http">
+<h2>via HTTP<a class="headerlink" href="#via-http" title="Permalink to this headline">¶</a></h2>
+<p>To enable a Flow to receive from HTTP requests, you can add <code class="docutils literal notranslate"><span class="pre">protocol='http'</span></code> in the Flow constructor.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">        gateway@153127[L]:ready and listening</span>
+<span class="go">           Flow@153127[I]:🎉 Flow is ready to use!</span>
+<span class="go">	🔗 Protocol: 		HTTP</span>
+<span class="go">	🏠 Local access:	0.0.0.0:12345</span>
+<span class="go">	🔒 Private network:	192.168.1.15:12345</span>
+<span class="go">	🌐 Public address:	197.26.36.43:12345</span>
+<span class="go">	💬 Swagger UI:		http://localhost:12345/docs</span>
+<span class="go">	📚 Redoc:		http://localhost:12345/redoc</span>
+</pre></div>
+</div>
+<div class="section" id="use-swagger-ui-to-send-http-request">
+<h3>Use Swagger UI to Send HTTP Request<a class="headerlink" href="#use-swagger-ui-to-send-http-request" title="Permalink to this headline">¶</a></h3>
+<p>You can navigate to the Swagger docs UI via <code class="docutils literal notranslate"><span class="pre">http://localhost:12345/docs</span></code>:</p>
+<div class="figure align-center">
+<img alt="../../_images/swagger-ui.png" src="../../_images/swagger-ui.png"/>
+</div>
+</div>
+<div class="section" id="use-curl-to-send-http-request">
+<h3>Use <code class="docutils literal notranslate"><span class="pre">curl</span></code> to Send HTTP Request<a class="headerlink" href="#use-curl-to-send-http-request" title="Permalink to this headline">¶</a></h3>
+<p>Now you can send data request via <code class="docutils literal notranslate"><span class="pre">curl</span></code>/Postman:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl --request POST <span class="s1">'http://localhost:12345/post'</span> --header <span class="s1">'Content-Type: application/json'</span> -d <span class="s1">'{"data": [{"text": "hello world"}],"execEndpoint": "/index"}'</span>
+
+<span class="go">{</span>
+<span class="go">  "requestId": "e2978837-e5cb-45c6-a36d-588cf9b24309",</span>
+<span class="go">  "data": {</span>
+<span class="go">    "docs": [</span>
+<span class="go">      {</span>
+<span class="go">        "id": "84d9538e-f5be-11eb-8383-c7034ef3edd4",</span>
+<span class="go">        "granularity": 0,</span>
+<span class="go">        "adjacency": 0,</span>
+<span class="go">        "parentId": "",</span>
+<span class="go">        "text": "hello world",</span>
+<span class="go">        "chunks": [],</span>
+<span class="go">        "weight": 0.0,</span>
+<span class="go">        "matches": [],</span>
+<span class="go">        "mimeType": "",</span>
+<span class="go">        "tags": {</span>
+<span class="go">          "mimeType": "",</span>
+<span class="go">          "parentId": ""</span>
+<span class="go">        },</span>
+<span class="go">        "location": [],</span>
+<span class="go">        "offset": 0,</span>
+<span class="go">        "embedding": null,</span>
+<span class="go">        "scores": {},</span>
+<span class="go">        "modality": "",</span>
+<span class="go">        "evaluations": {}</span>
+<span class="go">      }</span>
+<span class="go">    ],</span>
+<span class="go">    "groundtruths": []</span>
+<span class="go">  },</span>
+<span class="go">  "header": {</span>
+<span class="go">    "execEndpoint": "/index",</span>
+<span class="go">    "targetPeapod": "",</span>
+<span class="go">    "noPropagate": false</span>
+<span class="go">  },</span>
+<span class="go">  "parameters": {},</span>
+<span class="go">  "routes": [</span>
+<span class="go">    {</span>
+<span class="go">      "pod": "gateway",</span>
+<span class="go">      "podId": "5742d5dd-43f1-451f-88e7-ece0588b7557",</span>
+<span class="go">      "startTime": "2021-08-05T07:26:58.636258+00:00",</span>
+<span class="go">      "endTime": "2021-08-05T07:26:58.636910+00:00",</span>
+<span class="go">      "status": null</span>
+<span class="go">    }</span>
+<span class="go">  ],</span>
+<span class="go">  "status": {</span>
+<span class="go">    "code": 0,</span>
+<span class="go">    "description": "",</span>
+<span class="go">    "exception": null</span>
+<span class="go">  }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-python-to-send-http-request">
+<h3>Use Python to Send HTTP Request<a class="headerlink" href="#use-python-to-send-http-request" title="Permalink to this headline">¶</a></h3>
+<p>One can also use Python Client to send HTTP request, simply:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note this HTTP client is less-performant on large data, it does not stream. Hence, it should be only used for debugging &amp; testing.</p>
+</div>
+<div class="section" id="enable-cross-origin-resources-sharing-cors">
+<h3>Enable Cross-origin-resources-sharing (CORS)<a class="headerlink" href="#enable-cross-origin-resources-sharing-cors" title="Permalink to this headline">¶</a></h3>
+<p>CORS is by default disabled for security. That means you can not access the service from a webpage with different domain. To override this, simply do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">cors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="extend-http-interface">
+<h3>Extend HTTP Interface<a class="headerlink" href="#extend-http-interface" title="Permalink to this headline">¶</a></h3>
+<p>By default the following endpoints are exposed to the public:</p>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/status</code></td>
+<td>Check Jina service running status</td>
+</tr>
+<tr>
+<td><code>/post</code></td>
+<td>Corresponds to <code>f.post()</code> method in Python</td>
+</tr>
+<tr>
+<td><code>/index</code></td>
+<td>Corresponds to <code>f.post('/index')</code> method in Python</td>
+</tr>
+<tr>
+<td><code>/search</code></td>
+<td>Corresponds to <code>f.post('/search')</code> method in Python</td>
+</tr>
+<tr>
+<td><code>/update</code></td>
+<td>Corresponds to <code>f.post('/update')</code> method in Python</td>
+</tr>
+<tr>
+<td><code>/delete</code></td>
+<td>Corresponds to <code>f.post('/delete')</code> method in Python</td>
+</tr>
+</tbody>
+</table></div>
+<div class="section" id="hide-crud-and-debug-endpoints-from-http-interface">
+<h4>Hide CRUD and Debug Endpoints from HTTP Interface<a class="headerlink" href="#hide-crud-and-debug-endpoints-from-http-interface" title="Permalink to this headline">¶</a></h4>
+<p>User can decide to hide CRUD and debug endpoints in production, or when the context is not applicable. For example, in the code snippet below, we didn’t implement any CRUD endpoints for the executor, hence it does not make sense to expose them to public.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">,</span> 
+         <span class="n">no_debug_endpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+         <span class="n">no_crud_endpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/hide-crud-debug-endpoints.png" src="../../_images/hide-crud-debug-endpoints.png"/>
+</div>
+</div>
+<div class="section" id="expose-customized-endpoints-to-http-interface">
+<h4>Expose Customized Endpoints to HTTP Interface<a class="headerlink" href="#expose-customized-endpoints-to-http-interface" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">Flow.expose_endpoint</span></code> can be used to expose executor’s endpoint to HTTP interface, e.g.</p>
+<div class="figure align-center">
+<img alt="../../_images/expose-endpoints.svg" src="../../_images/expose-endpoints.svg"/></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">Flow</span>
+
+<span class="k">class</span> <span class="nc">MyExec</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+
+    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/foo'</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExec</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span><span class="s1">'/foo'</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">'my endpoint'</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/customized-foo-endpoint.png" src="../../_images/customized-foo-endpoint.png"/>
+</div>
+<p>Now, sending HTTP data request to <code class="docutils literal notranslate"><span class="pre">/foo</span></code> is equivalent as calling <code class="docutils literal notranslate"><span class="pre">f.post('/foo',</span> <span class="pre">...)</span></code> in Python.</p>
+<p>You can add more kwargs to build richer semantics on your HTTP endpoint. Those meta information will be rendered by Swagger UI and be forwarded to the OpenAPI schema.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span><span class="s1">'/bar'</span><span class="p">,</span> 
+                  <span class="n">summary</span><span class="o">=</span><span class="s1">'my endpoint'</span><span class="p">,</span>
+                  <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">'fine-tuning'</span><span class="p">],</span>
+                  <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'PUT'</span><span class="p">]</span>
+                  <span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="../../_images/rich-openapi.png" src="../../_images/rich-openapi.png"/>
+</div>
+</div>
+<div class="section" id="add-non-jina-related-routes">
+<h4>Add non-Jina Related Routes<a class="headerlink" href="#add-non-jina-related-routes" title="Permalink to this headline">¶</a></h4>
+<p>If you want to add more customized routes, configs, options to HTTP interface, you can simply
+override <code class="docutils literal notranslate"><span class="pre">jina.helper.extend_rest_interface</span></code> function as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jina.helper</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+
+<span class="k">def</span> <span class="nf">extend_rest_function</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'/hello'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">'My Extended APIs'</span><span class="p">])</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s1">'hello'</span>
+
+    <span class="k">return</span> <span class="n">app</span>
+
+
+<span class="n">jina</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">extend_rest_interface</span> <span class="o">=</span> <span class="n">extend_rest_function</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And you will see <code class="docutils literal notranslate"><span class="pre">/hello</span></code> is now available:</p>
+<div class="figure align-center">
+<img alt="../../_images/swagger-extend.png" src="../../_images/swagger-extend.png"/>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="switch-between-communication-protocols">
+<h2>Switch Between Communication Protocols<a class="headerlink" href="#switch-between-communication-protocols" title="Permalink to this headline">¶</a></h2>
+<p>You can switch to other protocol also via <code class="docutils literal notranslate"><span class="pre">.protocol</span></code> property setter. This setter works even in Flow runtime.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'grpc'</span><span class="p">)</span> 
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">Document</span><span class="p">())</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="s1">'http'</span>  <span class="c1"># switch to HTTP protocol request</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../clean-code/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Writing Clean &amp; Efficient Code with Jina</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Serving Jina</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; Jina AI Limited. All rights reserved.
+            |
+            Last updated on Aug 27, 2021.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Flow-as-a-service</a><ul>
+<li><a class="reference internal" href="#supported-communication-protocols">Supported Communication Protocols</a></li>
+<li><a class="reference internal" href="#via-grpc">via gRPC</a></li>
+<li><a class="reference internal" href="#via-websocket">via WebSocket</a></li>
+<li><a class="reference internal" href="#via-http">via HTTP</a><ul>
+<li><a class="reference internal" href="#use-swagger-ui-to-send-http-request">Use Swagger UI to Send HTTP Request</a></li>
+<li><a class="reference internal" href="#use-curl-to-send-http-request">Use <code class="docutils literal notranslate"><span class="pre">curl</span></code> to Send HTTP Request</a></li>
+<li><a class="reference internal" href="#use-python-to-send-http-request">Use Python to Send HTTP Request</a></li>
+<li><a class="reference internal" href="#enable-cross-origin-resources-sharing-cors">Enable Cross-origin-resources-sharing (CORS)</a></li>
+<li><a class="reference internal" href="#extend-http-interface">Extend HTTP Interface</a><ul>
+<li><a class="reference internal" href="#hide-crud-and-debug-endpoints-from-http-interface">Hide CRUD and Debug Endpoints from HTTP Interface</a></li>
+<li><a class="reference internal" href="#expose-customized-endpoints-to-http-interface">Expose Customized Endpoints to HTTP Interface</a></li>
+<li><a class="reference internal" href="#add-non-jina-related-routes">Add non-Jina Related Routes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#switch-between-communication-protocols">Switch Between Communication Protocols</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

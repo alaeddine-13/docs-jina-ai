@@ -1,0 +1,494 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Workspace" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://docs.jina.ai/cookbooks/daemon/workspace.html" />
+  <meta property="og:site_name" content="Jina Documentation" />
+  <meta property="og:description" content="Workspace is the entrypoint for all objects in JinaD. It primarily represents 4 pieces. Docker Image All objects created by JinaD are containerized. Workspace is responsible for building the base image. You can customize each image with the help of a.jinad file and a requirements.txt file., Docke..." />
+  <meta property="og:image" content="https://docs.jina.ai/_static/banner.png" />
+  <meta property="og:image:alt" content="Jina Documentation" />
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48ZDWC8GT6');
+</script>
+    <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Create Remote Executors" href="create-remote-executors.html" /><link rel="prev" title="Start JinaD Client" href="start-jinad-client.html" />
+
+    <meta name="generator" content="sphinx-3.5.3, furo 2021.06.18.beta36"/>
+        <title>Workspace - Welcome to Jina</title>
+      <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
+    <link rel="stylesheet" href="../../_static/pygments.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
+    <link rel="stylesheet" href="../../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Welcome to Jina</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-new.gif" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-new.gif" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Cookbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../document/index.html">Document/DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../document/document-api.html">Document API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarray-api.html">DocumentArray API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarraymemmap-api.html">DocumentArrayMemmap API</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../executor/index.html">Executor</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executor-api.html">Executor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executor-built-in-features.html">Executor Built-in Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/executors-in-action.html">Executors in Action</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../executor/repository-structure.html">Structure of the Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../flow/index.html">Flow</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flow/flow-api.html">Flow API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/remarks.html">Remarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../hub/index.html">JinaHub</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hub/prerequisites.html">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/create-hub-executor.html">1. Create Hub Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/push-executor.html">2. Push Executor to JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/update-executor.html">3. Update Executor in JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/pull-executor.html">4. Pull Executor from JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/use-hub-executor.html">5. Use in Jina Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">JinaD</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="setup-jinad-server.html">Setup JinaD Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start-jinad-client.html">Start JinaD Client</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-remote-executors.html">Create Remote Executors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-remote-flows.html">Create Remote Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream-remote-logs.html">Streaming Remote Logs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development-using-jinad.html">Development using JinaD</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/index.html">Jina Math</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/distances.html">Distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/dimension-reduction.html">Dimension Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/other-helpers.html">Other helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../serving/index.html">Serving Jina</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../serving/flow-as-a-service.html">Flow-as-a-service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../clean-code/index.html">Writing Clean &amp; Efficient Code with Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../proto/index.html">Jina Protobuf Specification</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina#read-tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://slack.jina.ai">Slack community</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <article role="main">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <div class="section" id="workspace">
+<h1>Workspace<a class="headerlink" href="#workspace" title="Permalink to this headline">¶</a></h1>
+<p>Workspace is the entrypoint for all objects in JinaD. It primarily represents 4 pieces.</p>
+<ol>
+<li><p><strong>Docker Image</strong></p>
+<p>All objects created by JinaD are containerized. Workspace is responsible for building the base image. You can
+customize each image with the help of a <code class="docutils literal notranslate"><span class="pre">.jinad</span></code> file and a <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file.</p>
+</li>
+<li><p><strong>Docker Network</strong></p>
+<p>Workspace is also responsible for managing a private <code class="docutils literal notranslate"><span class="pre">bridge</span></code> network for all child containers. This provides network
+isolation from other workspaces, while allowing all containers inside the same workspace to communicate.</p>
+</li>
+<li><p><strong>Local work directory</strong></p>
+<p>All the files used to manage a Jina object or created by a Jina object are stored here. This directory is exposed to
+all child containers. These can be:</p>
+<ul class="simple">
+<li><p>config files (e.g.- Flow/Executor YAML, Python modules etc),</p></li>
+<li><p>data written by your Executor</p></li>
+<li><p>logs (created by <code class="docutils literal notranslate"><span class="pre">fluentd</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.jinad</span></code> file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file</p></li>
+</ul>
+</li>
+<li><p><strong>Special files</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">.jinad</span></code> is an optional file defining how the base image is built. Following arguments are supported.</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">build</span> <span class="o">=</span> <span class="s">default                 ; NOTE: devel/default, (gpu: to be added).</span>
+<span class="na">python</span> <span class="o">=</span> <span class="s">3.7                    ; NOTE: 3.7, 3.8, 3.9 allowed.</span>
+<span class="na">jina</span> <span class="o">=</span> <span class="s">2.0.rc7                  ; NOTE: to be added.</span>
+<span class="na">ports</span> <span class="o">=</span> <span class="s">45678                   ; NOTE: comma separated ports to be mapped.</span>
+<span class="na">run</span> <span class="o">=</span> <span class="s">"python app.py 45678"     ; NOTE: command to start a Jina project on remote.</span>
+</pre></div>
+</div>
+<p>You can also deploy an end-to-end Jina project on remote using the following steps.</p>
+<ul class="simple">
+<li><p>Include a <code class="docutils literal notranslate"><span class="pre">.jinad</span></code> file with <code class="docutils literal notranslate"><span class="pre">run</span></code> set to your default entrypoint (e.g. - <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">app.py</span></code>)</p></li>
+<li><p>Upload all your files including <code class="docutils literal notranslate"><span class="pre">.jinad</span></code> during workspace creation.</p></li>
+<li><p>This will deploy a custom container with your project</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> defines all python packages to be installed using <code class="docutils literal notranslate"><span class="pre">pip</span></code> in the base image.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>annoy
+torch&gt;=1.8.0
+tensorflow
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+<div class="section" id="create-a-workspace-redoc">
+<h2>Create a workspace (<a class="reference external" href="https://api.jina.ai/daemon/#operation/_create_workspaces_post">redoc</a>)<a class="headerlink" href="#create-a-workspace-redoc" title="Permalink to this headline">¶</a></h2>
+<p>Create a directory (say <code class="docutils literal notranslate"><span class="pre">awesome_project</span></code>) on local which has all your files (<code class="docutils literal notranslate"><span class="pre">yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">py_modules</span></code>, <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>
+, <code class="docutils literal notranslate"><span class="pre">.jinad</span></code> etc.)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">daemon.clients</span> <span class="kn">import</span> <span class="n">JinaDClient</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">JinaDClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">PORT</span><span class="p">)</span>
+<span class="n">my_workspace_id</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="p">[</span><span class="s1">'path_to_awesome_project'</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>     JinaDClient@16018[I]:uploading 3 file(s): flow.yml, requirements.txt, .jinad
+  🌏 36f9d7f70145 DaemonWorker1 INFO  ---&gt; 70578df55b1c
+  🌏 36f9d7f70145 DaemonWorker1 INFO Step 4/7 : ARG PIP_REQUIREMENTS
+  🌏 36f9d7f70145 DaemonWorker1 INFO  ---&gt; Running in e1588f87b32c
+  🌏 36f9d7f70145 DaemonWorker1 INFO Removing intermediate container e1588f87b32c
+  🌏 36f9d7f70145 DaemonWorker1 INFO  ---&gt; 9f715ea59f8a
+  🌏 36f9d7f70145 DaemonWorker1 INFO Step 5/7 : RUN if [ -n "$PIP_REQUIREMENTS" ]; then         echo "Installing
+  ${PIP_REQUIREMENTS}";         for package in ${PIP_REQUIREMENTS}; do             pip install "${package}";         done;     fi
+  🌏 36f9d7f70145 DaemonWorker1 INFO  ---&gt; Running in e9018896b366
+  🌏 36f9d7f70145 DaemonWorker1 INFO Installing tinydb sklearn
+  🌏 36f9d7f70145 DaemonWorker1 INFO Collecting tinydb
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Downloading tinydb-4.5.1-py3-none-any.whl (23 kB)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Requirement already satisfied: typing-extensions&lt;4.0.0,&gt;=3.10.0 in
+  /usr/local/lib/python3.7/site-packages (from tinydb) (3.10.0.0)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Installing collected packages: tinydb
+  🌏 36f9d7f70145 DaemonWorker1 INFO Successfully installed tinydb-4.5.1
+  🌏 36f9d7f70145 DaemonWorker1 WARNING WARNING: Running pip as the 'root' user can result in broken permissions and conflicting
+  behaviour with the system package manager. It is recommended to use a virtual environment instead:
+  https://pip.pypa.io/warnings/venv
+  🌏 36f9d7f70145 DaemonWorker1 INFO Collecting sklearn
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Downloading sklearn-0.0.tar.gz (1.1 kB)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Collecting scikit-learn
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Downloading scikit_learn-0.24.2-cp37-cp37m-manylinux2010_x86_64.whl (22.3 MB)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Collecting joblib&gt;=0.11
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Downloading joblib-1.0.1-py3-none-any.whl (303 kB)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Requirement already satisfied: numpy&gt;=1.13.3 in /usr/local/lib/python3.7/site-packages (from
+  scikit-learn-&gt;sklearn) (1.21.1)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Collecting scipy&gt;=0.19.1
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Downloading scipy-1.7.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl (28.5 MB)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Collecting threadpoolctl&gt;=2.0.0
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Downloading threadpoolctl-2.2.0-py3-none-any.whl (12 kB)
+  🌏 36f9d7f70145 DaemonWorker1 INFO Building wheels for collected packages: sklearn
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Building wheel for sklearn (setup.py): started
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Building wheel for sklearn (setup.py): finished with status 'done'
+  🌏 36f9d7f70145 DaemonWorker1 INFO   Created wheel for sklearn: filename=sklearn-0.0-py2.py3-none-any.whl size=1309 sha256=ac85019415e0eeebf468e2f71c43d8ff9b78131eaaccce89e34bb5ba8a2473ca
+  🌏 36f9d7f70145 DaemonWorker1 INFO Successfully built sklearn
+  🌏 36f9d7f70145 DaemonWorker1 INFO Installing collected packages: threadpoolctl, scipy, joblib, scikit-learn, sklearn
+  🌏 36f9d7f70145 DaemonWorker1 INFO Successfully installed joblib-1.0.1 scikit-learn-0.24.2 scipy-1.7.0 sklearn-0.0 threadpoolctl-2.2.0
+  🌏 36f9d7f70145 DaemonWorker1 WARNING WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to
+  use a virtual environment instead: https://pip.pypa.io/warnings/venv
+  🌎  Workspace: Creating...    JinaDClient@16018[I]:jworkspace-480ec0d8-ea02-4adb-8e02-04cd27962863 created successfully
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-details-of-a-workspace-redoc">
+<h2>Get details of a workspace (<a class="reference external" href="https://api.jina.ai/daemon/#operation/_list_workspaces__id__get">redoc</a>)<a class="headerlink" href="#get-details-of-a-workspace-redoc" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">daemon.clients</span> <span class="kn">import</span> <span class="n">JinaDClient</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">JinaDClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">PORT</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">my_workspace_id</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+  "time_created": "2021-07-26T17:31:29.326049",
+  "state": "ACTIVE",
+  "metadata": {
+    "image_id": "97b0cb4860",
+    "image_name": "jworkspace:480ec0d8-ea02-4adb-8e02-04cd27962863",
+    "network": "8dcd21b98a",
+    "workdir": "/tmp/jinad/jworkspace-480ec0d8-ea02-4adb-8e02-04cd27962863",
+    "container_id": None,
+    "managed_objects": []
+  },
+  "arguments": {
+    "files": ["flow.yml", "requirements.txt", ".jinad"],
+    "jinad": {
+      "build": "default",
+      "dockerfile": "/usr/local/lib/python3.7/site-packages/daemon/Dockerfiles/default.Dockerfile"
+    },
+    "requirements": "tinydb sklearn"
+  }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="list-all-workspaces-redoc">
+<h2>List all workspaces (<a class="reference external" href="https://api.jina.ai/daemon/#operation/_get_items_workspaces_get">redoc</a>)<a class="headerlink" href="#list-all-workspaces-redoc" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+  "jworkspace-2b017b8f-19af-4d78-9364-6404447d91ac": {
+    ...
+  },
+  "jworkspace-8fec6449-2824-4913-9c06-3d0ec1314674": {
+    ...
+  },
+  "jworkspace-41dbe23a-9ecd-4e84-8df2-8dd6295a55b4": {
+    ...
+  },
+  "jworkspace-0cc90166-5ce2-4702-9d30-0ff8f3598a9f": {
+    ...
+  },
+  "jworkspace-be53f490-549a-4335-831a-5fb13a1de754": {
+    ...
+  },
+  "jworkspace-48319ab9-6c36-4e2d-b687-dd0ab498cb4f": {
+    ...
+  }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="delete-a-workspace-redoc">
+<h2>Delete a workspace (<a class="reference external" href="https://api.jina.ai/daemon/#operation/_delete_workspaces__id__delete">redoc</a>)<a class="headerlink" href="#delete-a-workspace-redoc" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">success_deleted</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">workspace_id</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">success_deleted</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="create-remote-executors.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Create Remote Executors</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="start-jinad-client.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Start JinaD Client</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; Jina AI Limited. All rights reserved.
+            |
+            Last updated on Aug 27, 2021.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Workspace</a><ul>
+<li><a class="reference internal" href="#create-a-workspace-redoc">Create a workspace (redoc)</a></li>
+<li><a class="reference internal" href="#get-details-of-a-workspace-redoc">Get details of a workspace (redoc)</a></li>
+<li><a class="reference internal" href="#list-all-workspaces-redoc">List all workspaces (redoc)</a></li>
+<li><a class="reference internal" href="#delete-a-workspace-redoc">Delete a workspace (redoc)</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

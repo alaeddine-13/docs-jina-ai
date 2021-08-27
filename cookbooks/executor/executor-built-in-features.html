@@ -1,0 +1,451 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Executor Built-in Features" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://docs.jina.ai/cookbooks/executor/executor-built-in-features.html" />
+  <meta property="og:site_name" content="Jina Documentation" />
+  <meta property="og:description" content="In Jina 2.0 the Executor class is generic to all categories of executors ( encoders, indexers, segmenters,…) to keep development simple. We do not provide subclasses of Executor that are specific to each category. The design principles are ( user here means “Executor developer”): Do not surprise ..." />
+  <meta property="og:image" content="https://docs.jina.ai/_static/banner.png" />
+  <meta property="og:image:alt" content="Jina Documentation" />
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48ZDWC8GT6');
+</script>
+    <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Executors in Action" href="executors-in-action.html" /><link rel="prev" title="Executor API" href="executor-api.html" />
+
+    <meta name="generator" content="sphinx-3.5.3, furo 2021.06.18.beta36"/>
+        <title>Executor Built-in Features - Welcome to Jina</title>
+      <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
+    <link rel="stylesheet" href="../../_static/pygments.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
+    <link rel="stylesheet" href="../../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Welcome to Jina</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-new.gif" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-new.gif" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Cookbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../document/index.html">Document/DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../document/document-api.html">Document API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarray-api.html">DocumentArray API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarraymemmap-api.html">DocumentArrayMemmap API</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Executor</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="executor-api.html">Executor API</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Executor Built-in Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executors-in-action.html">Executors in Action</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repository-structure.html">Structure of the Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../flow/index.html">Flow</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flow/flow-api.html">Flow API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/remarks.html">Remarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../hub/index.html">JinaHub</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hub/prerequisites.html">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/create-hub-executor.html">1. Create Hub Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/push-executor.html">2. Push Executor to JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/update-executor.html">3. Update Executor in JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/pull-executor.html">4. Pull Executor from JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/use-hub-executor.html">5. Use in Jina Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../daemon/index.html">JinaD</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/setup-jinad-server.html">Setup JinaD Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/start-jinad-client.html">Start JinaD Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/workspace.html">Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-executors.html">Create Remote Executors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-flows.html">Create Remote Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/stream-remote-logs.html">Streaming Remote Logs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/development-using-jinad.html">Development using JinaD</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/index.html">Jina Math</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/distances.html">Distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/dimension-reduction.html">Dimension Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/other-helpers.html">Other helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../serving/index.html">Serving Jina</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../serving/flow-as-a-service.html">Flow-as-a-service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../clean-code/index.html">Writing Clean &amp; Efficient Code with Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../proto/index.html">Jina Protobuf Specification</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina#read-tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://slack.jina.ai">Slack community</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <article role="main">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <div class="section" id="executor-built-in-features">
+<h1>Executor Built-in Features<a class="headerlink" href="#executor-built-in-features" title="Permalink to this headline">¶</a></h1>
+<p>In Jina 2.0 the Executor class is generic to all categories of executors (<code class="docutils literal notranslate"><span class="pre">encoders</span></code>, <code class="docutils literal notranslate"><span class="pre">indexers</span></code>, <code class="docutils literal notranslate"><span class="pre">segmenters</span></code>,…) to
+keep development simple. We do not provide subclasses of <code class="docutils literal notranslate"><span class="pre">Executor</span></code> that are specific to each category. The design
+principles are (<code class="docutils literal notranslate"><span class="pre">user</span></code> here means “Executor developer”):</p>
+<ul class="simple">
+<li><p><strong>Do not surprise the user</strong>: keep <code class="docutils literal notranslate"><span class="pre">Executor</span></code> class as Pythonic as possible. It should be as light and unintrusive as
+a <code class="docutils literal notranslate"><span class="pre">mixin</span></code> class:</p>
+<ul>
+<li><p>do not customize the class constructor logic;</p></li>
+<li><p>do not change its built-in interfaces <code class="docutils literal notranslate"><span class="pre">__getstate__</span></code>, <code class="docutils literal notranslate"><span class="pre">__setstate__</span></code>;</p></li>
+<li><p>do not add new members to the <code class="docutils literal notranslate"><span class="pre">Executor</span></code> object unless needed.</p></li>
+</ul>
+</li>
+<li><p><strong>Do not overpromise to the user</strong>: do not promise features that we can hardly deliver. Trying to control the
+interface while delivering just loosely-implemented features is bad for scaling the core framework. For
+example, <code class="docutils literal notranslate"><span class="pre">save</span></code>, <code class="docutils literal notranslate"><span class="pre">load</span></code>, <code class="docutils literal notranslate"><span class="pre">on_gpu</span></code>, etc.</p></li>
+</ul>
+<p>We want to give our users the freedom to customize their executors easily. If a user is a good Python programmer, they
+should pick up <code class="docutils literal notranslate"><span class="pre">Executor</span></code> in no time. It is as simple as subclassing <code class="docutils literal notranslate"><span class="pre">Executor</span></code> and adding an endpoint.</p>
+<div class="section" id="workspace">
+<h2>Workspace<a class="headerlink" href="#workspace" title="Permalink to this headline">¶</a></h2>
+<p>Executor’s workspace is inherited according to the following rule (<code class="docutils literal notranslate"><span class="pre">OR</span></code> is a python <code class="docutils literal notranslate"><span class="pre">or</span></code>, i.e. first thing first, if NA
+then second):</p>
+<div class="figure align-center">
+<img alt="../../_images/workspace-inherit.svg" src="../../_images/workspace-inherit.svg"/></div>
+</div>
+<div class="section" id="metas">
+<h2>Metas<a class="headerlink" href="#metas" title="Permalink to this headline">¶</a></h2>
+<p>The meta attributes of an <code class="docutils literal notranslate"><span class="pre">Executor</span></code> object are now gathered in <code class="docutils literal notranslate"><span class="pre">self.metas</span></code>, instead of directly posting them to <code class="docutils literal notranslate"><span class="pre">self</span></code>
+, e.g. to access <code class="docutils literal notranslate"><span class="pre">name</span></code> use <code class="docutils literal notranslate"><span class="pre">self.metas.name</span></code>.</p>
+</div>
+<div class="section" id="metas-runtime-args">
+<h2><code class="docutils literal notranslate"><span class="pre">.metas</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">.runtime_args</span></code><a class="headerlink" href="#metas-runtime-args" title="Permalink to this headline">¶</a></h2>
+<p>By default, an <code class="docutils literal notranslate"><span class="pre">Executor</span></code> object contains two collections of attributes: <code class="docutils literal notranslate"><span class="pre">.metas</span></code> and <code class="docutils literal notranslate"><span class="pre">.runtime_args</span></code>. They are both
+in <code class="docutils literal notranslate"><span class="pre">SimpleNamespace</span></code> type and contain some key-value information. However, they are defined differently and serve
+different purposes.</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">.metas</span></code> are statically defined.</strong> “Static” means, e.g. from hard-coded value in the code, from a YAML file.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">.runtime_args</span></code> are dynamically determined during runtime.</strong> Means that you don’t know the value before running
+the <code class="docutils literal notranslate"><span class="pre">Executor</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">pea_id</span></code>, <code class="docutils literal notranslate"><span class="pre">replicas</span></code>, <code class="docutils literal notranslate"><span class="pre">replica_id</span></code>. Those values are often related to the system/network
+environment around the <code class="docutils literal notranslate"><span class="pre">Executor</span></code>, and less about the <code class="docutils literal notranslate"><span class="pre">Executor</span></code> itself.</p></li>
+</ul>
+<p>In 2.0rc1, the following fields are valid for <code class="docutils literal notranslate"><span class="pre">metas</span></code> and <code class="docutils literal notranslate"><span class="pre">runtime_args</span></code>:</p>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.metas</code> (static values from hard-coded values, YAML config)</td>
+<td><code>name</code>, <code>description</code>, <code>py_modules</code>, <code>workspace</code></td>
+</tr>
+<tr>
+<td><code>.runtime_args</code> (runtime values from its containers, e.g. <code>Runtime</code>, <code>Pea</code>, <code>Pod</code>)</td>
+<td><code>name</code>, <code>description</code>, <code>workspace</code>, <code>log_config</code>, <code>quiet</code>, <code>quiet_error</code>, <code>identity</code>, <code>port_ctrl</code>, <code>ctrl_with_ipc</code>, <code>timeout_ctrl</code>, <code>ssh_server</code>, <code>ssh_keyfile</code>, <code>ssh_password</code>, <code>uses</code>, <code>py_modules</code>, <code>port_in</code>, <code>port_out</code>, <code>host_in</code>, <code>host_out</code>, <code>socket_in</code>, <code>socket_out</code>, <code>memory_hwm</code>, <code>on_error_strategy</code>, <code>num_part</code>, <code>entrypoint</code>, <code>docker_kwargs</code>, <code>pull_latest</code>, <code>volumes</code>, <code>host</code>, <code>port_expose</code>, <code>quiet_remote_logs</code>, <code>upload_files</code>, <code>workspace_id</code>, <code>daemon</code>, <code>runtime_backend</code>, <code>runtime_cls</code>, <code>timeout_ready</code>, <code>env</code>, <code>expose_public</code>, <code>pea_id</code>, <code>pea_role</code>, <code>noblock_on_start</code>, <code>uses_before</code>, <code>uses_after</code>, <code>parallel</code>, <code>replicas</code>, <code>polling</code>, <code>scheduling</code>, <code>pod_role</code>, <code>peas_hosts</code>, <code>proxy</code>, <code>uses_metas</code>, <code>external</code>, <code>gpus</code>, <code>zmq_identity</code>, <code>hosts_in_connect</code>, <code>uses_with</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>the YAML API will ignore <code class="docutils literal notranslate"><span class="pre">.runtime_args</span></code> during save and load as they are not statically stored</p></li>
+<li><p>for any other parametrization of the Executor, you can still access its constructor arguments (defined in the
+class <code class="docutils literal notranslate"><span class="pre">__init__</span></code>) and the request <code class="docutils literal notranslate"><span class="pre">parameters</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workspace</span></code> will be retrieved from either <code class="docutils literal notranslate"><span class="pre">metas</span></code> or <code class="docutils literal notranslate"><span class="pre">runtime_args</span></code>, in that order</p></li>
+</ul>
+</div>
+<div class="section" id="handle-parameters">
+<h2>Handle parameters<a class="headerlink" href="#handle-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Parameters are passed to executors via <code class="docutils literal notranslate"><span class="pre">request.parameters</span></code> with <code class="docutils literal notranslate"><span class="pre">Flow.post(...,</span> <span class="pre">parameters=)</span></code>. This way all
+the <code class="docutils literal notranslate"><span class="pre">executors</span></code> will receive
+<code class="docutils literal notranslate"><span class="pre">parameters</span></code> as an argument to their <code class="docutils literal notranslate"><span class="pre">methods</span></code>. These <code class="docutils literal notranslate"><span class="pre">parameters</span></code> can be used to pass extra information or tune
+the <code class="docutils literal notranslate"><span class="pre">executor</span></code> behavior for a given request without updating the general configuration.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Flow</span>
+
+
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_param</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_param</span> <span class="o">=</span> <span class="n">default_param</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DocumentArray</span><span class="p">],</span> <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'param'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_param</span><span class="p">)</span>
+        <span class="c1"># param may be overriden for this specific request</span>
+        <span class="k">assert</span> <span class="n">param</span> <span class="o">==</span> <span class="mi">5</span>
+
+
+<span class="k">with</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/endpoint'</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">DocumentArray</span><span class="p">([]),</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">'param'</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>However, this can be a problem when the user wants different executors to have different values of the same parameters.
+In that case one can specify specific parameters for the specific <code class="docutils literal notranslate"><span class="pre">executor</span></code> by adding a <code class="docutils literal notranslate"><span class="pre">dictionary</span></code> inside parameters
+with the <code class="docutils literal notranslate"><span class="pre">executor</span></code> name as <code class="docutils literal notranslate"><span class="pre">key</span></code>. Jina will then take all these specific parameters and copy to the root of the
+parameters dictionary before calling the executor <code class="docutils literal notranslate"><span class="pre">method</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Flow</span>
+
+
+<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_param</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_param</span> <span class="o">=</span> <span class="n">default_param</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DocumentArray</span><span class="p">],</span> <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'param'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_param</span><span class="p">)</span>
+        <span class="c1"># param may be overriden for this specific request. </span>
+        <span class="c1"># The first instance will receive 10, and the second one will receive 5</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metas</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">'my-executor-1'</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">param</span> <span class="o">==</span> <span class="mi">10</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metas</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">'my-executor-2'</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">param</span> <span class="o">==</span> <span class="mi">5</span>
+
+
+<span class="k">with</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="p">{</span><span class="s1">'jtype'</span><span class="p">:</span> <span class="s1">'MyExecutor'</span><span class="p">,</span> <span class="s1">'metas'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'my-executor-1'</span><span class="p">}})</span><span class="o">.</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="p">{</span><span class="s1">'jtype'</span><span class="p">:</span> <span class="s1">'MyExecutor'</span><span class="p">,</span> <span class="s1">'metas'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'my-executor-2'</span><span class="p">}}))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/endpoint'</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">DocumentArray</span><span class="p">([]),</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">'param'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">'my-executor-1'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'param'</span><span class="p">:</span> <span class="mi">10</span><span class="p">}})</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="executors-in-action.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Executors in Action</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="executor-api.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Executor API</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; Jina AI Limited. All rights reserved.
+            |
+            Last updated on Aug 27, 2021.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Executor Built-in Features</a><ul>
+<li><a class="reference internal" href="#workspace">Workspace</a></li>
+<li><a class="reference internal" href="#metas">Metas</a></li>
+<li><a class="reference internal" href="#metas-runtime-args"><code class="docutils literal notranslate"><span class="pre">.metas</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">.runtime_args</span></code></a></li>
+<li><a class="reference internal" href="#handle-parameters">Handle parameters</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>
