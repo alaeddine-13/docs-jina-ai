@@ -1,0 +1,616 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Executors in Action" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://docs.jina.ai/cookbooks/executor/executors-in-action.html" />
+  <meta property="og:site_name" content="Jina Documentation" />
+  <meta property="og:description" content="Fastai: This Executor uses the ResNet18 network for object classification on images provided by fastai. The encode function of this executor generates a feature vector for each image in each Document of the input DocumentArray. The feature vector generated is the output activations of the neural ..." />
+  <meta property="og:image" content="https://docs.jina.ai/_static/banner.png" />
+  <meta property="og:image:alt" content="Jina Documentation" />
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48ZDWC8GT6');
+</script>
+    <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Structure of the Repository" href="repository-structure.html" /><link rel="prev" title="Executor Built-in Features" href="executor-built-in-features.html" />
+
+    <meta name="generator" content="sphinx-3.5.3, furo 2021.06.18.beta36"/>
+        <title>Executors in Action - Welcome to Jina</title>
+      <link rel="stylesheet" href="../../_static/styles/furo.css?digest=9b17055c4366e8b2949c66d6a9d8b0efe4dbaa60">
+    <link rel="stylesheet" href="../../_static/pygments.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../_static/pygments_dark.css">
+    <link rel="stylesheet" href="../../_static/styles/furo-extensions.css?digest=ee12cdd73c4bbac24afec78d92c4afd7c2d8ea7f"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Welcome to Jina</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-new.gif" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-new.gif" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Cookbooks</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../document/index.html">Document/DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../document/document-api.html">Document API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarray-api.html">DocumentArray API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../document/documentarraymemmap-api.html">DocumentArrayMemmap API</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Executor</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="executor-api.html">Executor API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executor-built-in-features.html">Executor Built-in Features</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Executors in Action</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repository-structure.html">Structure of the Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../flow/index.html">Flow</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flow/flow-api.html">Flow API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/remarks.html">Remarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../hub/index.html">JinaHub</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hub/prerequisites.html">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/create-hub-executor.html">1. Create Hub Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/push-executor.html">2. Push Executor to JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/update-executor.html">3. Update Executor in JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/pull-executor.html">4. Pull Executor from JinaHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hub/use-hub-executor.html">5. Use in Jina Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../daemon/index.html">JinaD</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label for="toctree-checkbox-5"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/setup-jinad-server.html">Setup JinaD Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/start-jinad-client.html">Start JinaD Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/workspace.html">Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-executors.html">Create Remote Executors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/create-remote-flows.html">Create Remote Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/stream-remote-logs.html">Streaming Remote Logs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../daemon/development-using-jinad.html">Development using JinaD</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/index.html">Jina Math</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label for="toctree-checkbox-6"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/distances.html">Distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/dimension-reduction.html">Dimension Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/other-helpers.html">Other helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../serving/index.html">Serving Jina</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label for="toctree-checkbox-7"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../serving/flow-as-a-service.html">Flow-as-a-service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../clean-code/index.html">Writing Clean &amp; Efficient Code with Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../proto/index.html">Jina Protobuf Specification</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label for="toctree-checkbox-8"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina#read-tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://slack.jina.ai">Slack community</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <article role="main">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <div class="section" id="executors-in-action">
+<h1>Executors in Action<a class="headerlink" href="#executors-in-action" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="fastai">
+<h2>Fastai<a class="headerlink" href="#fastai" title="Permalink to this headline">¶</a></h2>
+<p>This <code class="docutils literal notranslate"><span class="pre">Executor</span></code> uses the <a class="reference external" href="https://docs.fast.ai">ResNet18</a> network for object classification on images provided
+by <a class="reference external" href="https://github.com/fastai/fastai">fastai</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">encode</span></code> function of this executor generates a feature vector for each image in each <code class="docutils literal notranslate"><span class="pre">Document</span></code> of the
+input <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>. The feature vector generated is the output activations of the neural network (a vector of 1000
+components). Note the embedding of each text is performed in a joined operation (all embeddings are created for all
+images in a single function call) to achieve higher performance.</p>
+<p>As a result each <code class="docutils literal notranslate"><span class="pre">Document</span></code> in the input <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> <em>docs</em> will have an <code class="docutils literal notranslate"><span class="pre">embedding</span></code> after <code class="docutils literal notranslate"><span class="pre">encode()</span></code> has
+completed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">fastai.vision.models</span> <span class="kn">import</span> <span class="n">resnet18</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">ResnetImageEncoder</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">resnet18</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">(</span><span class="s1">'blob'</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">batch_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">emb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">batch_embeddings</span><span class="p">):</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">emb</span>
+
+</pre></div>
+</div>
+</div>
+<div class="section" id="pytorch-lightning">
+<h2>Pytorch Lightning<a class="headerlink" href="#pytorch-lightning" title="Permalink to this headline">¶</a></h2>
+<p>This code snippet uses an autoencoder pretrained from cifar10-resnet18 to build an executor that encodes Document blob(
+an ndarray that could for example be an image) into embedding . It demonstrates the use of prebuilt model
+from <a class="reference external" href="https://pytorch-lightning.readthedocs.io/en/stable/ecosystem/bolts.html">PyTorch Lightning Bolts</a> to build a Jina
+encoder.”</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pl_bolts.models.autoencoders</span> <span class="kn">import</span> <span class="n">AE</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+
+
+<span class="k">class</span> <span class="nc">PLMwuAutoEncoder</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ae</span> <span class="o">=</span> <span class="n">AE</span><span class="p">(</span><span class="n">input_height</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">'cifar10-resnet18'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+                <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
+                <span class="n">output_tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">)</span>
+                <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">output_tensor</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="paddle">
+<h2>Paddle<a class="headerlink" href="#paddle" title="Permalink to this headline">¶</a></h2>
+<p>The example below use PaddlePaddle <a class="reference external" href="https://github.com/PaddlePaddle/ERNIE">Ernie</a> model as encoder. The Executor load
+pre-trained Ernie family of tokenizer and model. Convert Jina Document <code class="docutils literal notranslate"><span class="pre">doc.text</span></code> into Paddle Tensor and encode it as
+embedding. As a result, each <code class="docutils literal notranslate"><span class="pre">Document</span></code> in the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> will have an <code class="docutils literal notranslate"><span class="pre">embedding</span></code> after <code class="docutils literal notranslate"><span class="pre">encode()</span></code> has completed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span> <span class="k">as</span> <span class="nn">P</span>  <span class="c1"># paddle==2.1.0</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ernie.modeling_ernie</span> <span class="kn">import</span> <span class="n">ErnieModel</span>  <span class="c1"># paddle-ernie 0.2.0.dev1</span>
+<span class="kn">from</span> <span class="nn">ernie.tokenizing_ernie</span> <span class="kn">import</span> <span class="n">ErnieTokenizer</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">PaddleErineExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">ErnieTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">'ernie-1.0'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ErnieModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">'ernie-1.0'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">ids</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">pooled</span><span class="p">,</span> <span class="n">encoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">pooled</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tensorflow">
+<h2>Tensorflow<a class="headerlink" href="#tensorflow" title="Permalink to this headline">¶</a></h2>
+<p>This <code class="docutils literal notranslate"><span class="pre">Executor</span></code> uses the <a class="reference external" href="https://keras.io/api/applications/mobilenet/">MobileNetV2</a> network for object classification
+on images.</p>
+<p>It extracts the <code class="docutils literal notranslate"><span class="pre">buffer</span></code> field (which is the actual byte array) from each input <code class="docutils literal notranslate"><span class="pre">Document</span></code> in the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> <em>docs</em>
+, preprocesses the byte array and uses <em>MobileNet</em> to predict the classes (dog/car/…) found in the image. Those
+predictions are Numpy arrays encoding the probability for each class supported by the model (1000 in this case).
+The <code class="docutils literal notranslate"><span class="pre">Executor</span></code> stores those arrays then in the <code class="docutils literal notranslate"><span class="pre">embedding</span></code> for each <code class="docutils literal notranslate"><span class="pre">Document</span></code>.</p>
+<p>As a result each <code class="docutils literal notranslate"><span class="pre">Document</span></code> in the input <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> <em>docs</em> will have an <code class="docutils literal notranslate"><span class="pre">embedding</span></code> after <code class="docutils literal notranslate"><span class="pre">encode()</span></code> has completed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">keras.applications.mobilenet_v2</span> <span class="kn">import</span> <span class="n">MobileNetV2</span><span class="p">,</span> <span class="n">preprocess_input</span>
+<span class="kn">from</span> <span class="nn">tensorflow.python.framework.errors_impl</span> <span class="kn">import</span> <span class="n">InvalidArgumentError</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">TfMobileNetEncoder</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dim</span> <span class="o">=</span> <span class="mi">224</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">MobileNetV2</span><span class="p">(</span><span class="n">pooling</span><span class="o">=</span><span class="s1">'avg'</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dim</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">buffers</span><span class="p">,</span> <span class="n">docs</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">get_attributes_with_docs</span><span class="p">(</span><span class="s1">'buffer'</span><span class="p">)</span>
+
+        <span class="n">tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">decode_image</span><span class="p">(</span><span class="n">contents</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">buffers</span><span class="p">]</span>
+        <span class="n">resized_tensors</span> <span class="o">=</span> <span class="n">preprocess_input</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resize_images</span><span class="p">(</span><span class="n">tensors</span><span class="p">)))</span>
+
+        <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">resized_tensors</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">embeds</span><span class="p">):</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">b</span>
+
+    <span class="k">def</span> <span class="nf">_resize_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensors</span><span class="p">):</span>
+        <span class="n">resized_tensors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tensors</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">resized_tensors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">smart_resize</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dim</span><span class="p">)))</span>
+            <span class="k">except</span> <span class="n">InvalidArgumentError</span><span class="p">:</span>
+                <span class="c1"># this can happen if you include empty or other malformed images</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">resized_tensors</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mindspore">
+<h2>MindSpore<a class="headerlink" href="#mindspore" title="Permalink to this headline">¶</a></h2>
+<p>The code snippet below takes <code class="docutils literal notranslate"><span class="pre">docs</span></code> as input and perform matrix multiplication with <code class="docutils literal notranslate"><span class="pre">self.encoding_matrix</span></code>. It
+leverages Mindspore <code class="docutils literal notranslate"><span class="pre">Tensor</span></code> conversion and operation. Finally, the <code class="docutils literal notranslate"><span class="pre">embedding</span></code> of each document will be set as the
+multiplied result as <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">mindspore</span> <span class="kn">import</span> <span class="n">Tensor</span>  <span class="c1"># mindspore 1.2.0</span>
+<span class="kn">import</span> <span class="nn">mindspore.ops</span> <span class="k">as</span> <span class="nn">ops</span>
+<span class="kn">import</span> <span class="nn">mindspore.context</span> <span class="k">as</span> <span class="nn">context</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">MindsporeMwuExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">PYNATIVE_MODE</span><span class="p">,</span> <span class="n">device_target</span><span class="o">=</span><span class="s1">'CPU'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding_mat</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">matmul</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">MatMul</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">input_tensor</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>  <span class="c1"># convert the ``ndarray`` of the doc to ``Tensor``</span>
+            <span class="n">output_tensor</span> <span class="o">=</span> <span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding_mat</span><span class="p">,</span> <span class="n">input_tensor</span><span class="p">)</span>  <span class="c1"># multiply the input with the encoding matrix.</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">output_tensor</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span>  <span class="c1"># assign the encoding results to ``embedding``</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scikit-learn">
+<h2>Scikit-learn<a class="headerlink" href="#scikit-learn" title="Permalink to this headline">¶</a></h2>
+<p>This <code class="docutils literal notranslate"><span class="pre">Executor</span></code> uses
+a <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html">TF-IDF</a>
+feature vector to generate sparse embeddings for text search.</p>
+<p>The class <code class="docutils literal notranslate"><span class="pre">TFIDFTextEncoder</span></code> extracts stores a <code class="docutils literal notranslate"><span class="pre">tfidf_vectorizer</span></code> object that it is fitted with a dataset already
+present in <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>. The executor provides an <code class="docutils literal notranslate"><span class="pre">encode</span></code> method that recieves a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> and updates each document
+in the  <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> with an <code class="docutils literal notranslate"><span class="pre">embedding</span></code> attribute that is the tf-idf representation of the text found in the
+document. Note the embedding of each text is perfomed in a joined operation (all embeddings are creted for all texts in
+a single function call) to achieve higher performance.</p>
+<p>As a result, each <code class="docutils literal notranslate"><span class="pre">Document</span></code> in the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> will have an <code class="docutils literal notranslate"><span class="pre">embedding</span></code> after <code class="docutils literal notranslate"><span class="pre">encode()</span></code> has completed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">fetch_20newsgroups</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+
+<span class="k">class</span> <span class="nc">TFIDFTextEncoder</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">fetch_20newsgroups</span><span class="p">()</span>
+        <span class="n">tfidf_vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">()</span>
+        <span class="n">tfidf_vectorizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttfidf_vectorizer</span> <span class="o">=</span> <span class="n">tfidf_vectorizer</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">iterable_of_texts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">(</span><span class="s1">'text'</span><span class="p">)</span>
+        <span class="n">embedding_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfidf_vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">iterable_of_texts</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">docs</span><span class="p">):</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pytorch">
+<h2>PyTorch<a class="headerlink" href="#pytorch" title="Permalink to this headline">¶</a></h2>
+<p>The code snippet below takes <code class="docutils literal notranslate"><span class="pre">docs</span></code> as input and perform feature extraction with <code class="docutils literal notranslate"><span class="pre">modelnet</span> <span class="pre">v2</span></code>. It leverages
+Pytorch’s <code class="docutils literal notranslate"><span class="pre">Tensor</span></code> conversion and operation. Finally, the <code class="docutils literal notranslate"><span class="pre">embedding</span></code> of each document will be set as the extracted
+features.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>  <span class="c1"># 1.8.1</span>
+<span class="kn">import</span> <span class="nn">torchvision.models</span> <span class="k">as</span> <span class="nn">models</span>  <span class="c1"># 0.9.1</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">PytorchMobilNetExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">quantization</span><span class="o">.</span><span class="n">mobilenet_v2</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quantize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">blobs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">(</span><span class="s1">'blob'</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">blobs</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">embed</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">embeds</span><span class="p">):</span>
+                <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">embed</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="onnx-runtime">
+<h2>ONNX-Runtime<a class="headerlink" href="#onnx-runtime" title="Permalink to this headline">¶</a></h2>
+<p>The code snippet bellow converts a <code class="docutils literal notranslate"><span class="pre">Pytorch</span></code> model to the <code class="docutils literal notranslate"><span class="pre">ONNX</span></code> and leverage <code class="docutils literal notranslate"><span class="pre">onnxruntime</span></code> to run inference tasks on
+models from <code class="docutils literal notranslate"><span class="pre">hugging-face</span> <span class="pre">transformers</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">onnxruntime</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">BertTokenizerFast</span><span class="p">,</span> <span class="n">convert_graph_to_onnx</span>
+
+
+<span class="k">class</span> <span class="nc">ONNXBertExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># export your huggingface model to onnx</span>
+        <span class="n">convert_graph_to_onnx</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
+            <span class="n">framework</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">"bert-base-cased"</span><span class="p">,</span>
+            <span class="n">output</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s2">"onnx/bert-base-cased.onnx"</span><span class="p">),</span>
+            <span class="n">opset</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># create the tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizerFast</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">"bert-base-cased"</span><span class="p">)</span>
+
+        <span class="c1"># create the inference session</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">SessionOptions</span><span class="p">()</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">intra_op_num_threads</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># have an impact on performances</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">graph_optimization_level</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">onnxruntime</span><span class="o">.</span><span class="n">GraphOptimizationLevel</span><span class="o">.</span><span class="n">ORT_ENABLE_ALL</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Load the model as a graph and prepare the CPU backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span>
+            <span class="s2">"onnx/bert-base-cased.onnx"</span><span class="p">,</span> <span class="n">options</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">disable_fallback</span><span class="p">()</span>
+
+    <span class="nd">@requests</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode_plus</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">tokens</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+            <span class="n">output</span><span class="p">,</span> <span class="n">pooled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+            <span class="c1"># assign the encoding results to ``embedding``</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">pooled</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="repository-structure.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Structure of the Repository</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="executor-built-in-features.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Executor Built-in Features</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; Jina AI Limited. All rights reserved.
+            |
+            Last updated on Aug 27, 2021.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Executors in Action</a><ul>
+<li><a class="reference internal" href="#fastai">Fastai</a></li>
+<li><a class="reference internal" href="#pytorch-lightning">Pytorch Lightning</a></li>
+<li><a class="reference internal" href="#paddle">Paddle</a></li>
+<li><a class="reference internal" href="#tensorflow">Tensorflow</a></li>
+<li><a class="reference internal" href="#mindspore">MindSpore</a></li>
+<li><a class="reference internal" href="#scikit-learn">Scikit-learn</a></li>
+<li><a class="reference internal" href="#pytorch">PyTorch</a></li>
+<li><a class="reference internal" href="#onnx-runtime">ONNX-Runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>
